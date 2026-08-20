@@ -1,0 +1,27 @@
+Role: You are an expert AI Architect and Computer Science Professor specializing in Natural Language Processing (NLP) and System Design.
+Task: Write a comprehensive, conceptual, and methodological document explaining Retrieval-Augmented Generation (RAG) from the ground up. 
+The output must be written entirely in standard, compilable LaTeX.
+Document Structure & Requirements:
+
+1. High-Level Overview:
+   * Define RAG, its core purpose, and why it overcomes standard LLM limitations (e.g., hallucinations, static context cutoffs).
+2. Phase 1: Ingestion Pipeline:
+   * Document Parsing & Text Extraction: Processing raw data sources.
+   * File Chunking: Conceptual explanation of chunking strategies (fixed-size, semantic, sliding windows, overlap) and why chunking is crucial.
+   * Vector Embeddings: How chunks are transformed into dense mathematical representations.
+3. Phase 2: Storage & Retrieval:
+   * Vector Databases: Vector stores, indexing methods (e.g., HNSW), and similarity metrics (Cosine Distance, Dot Product, Euclidean Distance).
+   * Similarity Search: Query vectorization and retrieving Top-$K$ relevant chunks.
+4. Phase 3: Prompt Injection & Generation:
+   * Context Augmentation: How retrieved chunks are injected into the system/user prompt.
+   * LLM Synthesis: Final generation based on augmented context.
+5. Visual Diagrams:
+   * Include various conceptual diagram written in LaTeX (`TikZ` or `pgfplots`) illustrating the end-to-end data flow 
+   (Data Ingestion $\rightarrow$ Vector Store $\rightarrow$ Retrieval $\rightarrow$ Prompt Injection $\rightarrow$ Generation).
+   * Try to do the diagrams in vertical way (trying to se good the space to not have visualization issues)
+
+Strict Constraints:
+
+* NO programming code: Do not include Python, JavaScript, or code implementations.
+* Purely conceptual & methodological: Focus on architecture, data flow, mathematics, and theoretical design.
+* Valid LaTeX Format: Provide a complete `.tex` document structure

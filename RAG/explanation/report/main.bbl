@@ -1,0 +1,36 @@
+\begin{thebibliography}{1}
+
+\bibitem{asai2023selfrag}
+Akari Asai, Zeqiu Wu, Yizhong Wang, Avirup Sil, and Hannaneh Hajishirzi.
+\newblock Self-rag: Learning to retrieve, generate, and critique through
+  self-reflection.
+\newblock {\em arXiv preprint arXiv:2310.11511}, 2023.
+
+\bibitem{lewis2020rag}
+Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir
+  Karpukhin, Naman Goyal, Heinrich K{\"u}ttler, Mike Lewis, Wen-tau Yih, Tim
+  Rockt{\"a}schel, Sebastian Riedel, and Douwe Kiela.
+\newblock Retrieval-augmented generation for knowledge-intensive nlp tasks.
+\newblock {\em Advances in Neural Information Processing Systems},
+  33:9459--9474, 2020.
+
+\bibitem{mei2025multimodal}
+Lang Mei, Siyu Mo, Zhihan Yang, and Chong Chen.
+\newblock A survey of multimodal retrieval-augmented generation.
+\newblock {\em arXiv preprint arXiv:2504.08748}, 2025.
+
+\bibitem{sharma2025rag}
+Chaitanya Sharma.
+\newblock Retrieval-augmented generation: A comprehensive survey of
+  architectures, enhancements, and robustness frontiers.
+\newblock {\em arXiv preprint arXiv:2506.00054}, 2025.
+
+\bibitem{zhang2025graphrag}
+Qinggang Zhang, Shengyuan Chen, Yuanchen Bei, Zheng Yuan, Huachi Zhou, Zijin
+  Hong, Hao Chen, Yilin Xiao, Chuang Zhou, Junnan Dong, Yi~Chang, and Xiao
+  Huang.
+\newblock A survey of graph retrieval-augmented generation for customized large
+  language models.
+\newblock {\em arXiv preprint arXiv:2501.13958}, 2025.
+
+\end{thebibliography}

@@ -1,0 +1,4 @@
+**/copy/
+
+# Upstream clones (embedded git repos): never track their contents.
+explore-apps/clones/

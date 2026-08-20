@@ -1,0 +1,39 @@
+{
+  "run_id": "20260818T213006Z",
+  "config": {
+    "run_id": "20260818T213006Z",
+    "docs_dir": "RAG-docs-test",
+    "chroma_dir": "chroma-rag-index",
+    "embedding_model": "all-MiniLM-L6-v2",
+    "llm_model": "llama3.2:1b",
+    "chunk_size": 800,
+    "chunk_overlap": 100,
+    "top_k": 4,
+    "num_ctx": 4096,
+    "temperature": 0.1
+  },
+  "python": "3.14.4",
+  "deps": {
+    "chromadb": "1.5.9",
+    "pypdf": "6.16.1",
+    "ollama": "0.6.2"
+  },
+  "documents": [
+    {
+      "file": "ANE_0406_2026.pdf",
+      "pages": 8,
+      "bytes": 64073
+    },
+    {
+      "file": "ANE_0463_2020.pdf",
+      "pages": 57,
+      "bytes": 751194
+    }
+  ],
+  "chunks": 203,
+  "indexed_chunks": 203,
+  "artifacts": [
+    "qa-transcript.md",
+    "qa-transcript.json"
+  ]
+}
