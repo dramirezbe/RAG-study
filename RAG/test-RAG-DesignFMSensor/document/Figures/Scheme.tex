@@ -1,0 +1,111 @@
+	\centering
+\begin{center}
+	\begin{tikzpicture}[
+		% Enhanced styling
+		node distance=1.2cm and 2.4cm,
+		box/.style={
+			draw, 
+			rounded corners=8pt, 
+			minimum width=4.5cm, 
+			minimum height=1.2cm, 
+			align=center, 
+			font=\small\bfseries,
+			drop shadow={shadow xshift=2pt, shadow yshift=-2pt, opacity=0.3}
+		},
+		arrow/.style={
+			-{Stealth[length=3mm, width=2mm]}, 
+			thick, 
+			color=light-azul,
+			line width=1.2pt
+		},
+		feedback/.style={
+			-{Stealth[length=3mm, width=2mm]}, 
+			thick, 
+			color=light-red, 
+			dashed,
+			line width=1.2pt
+		},
+		comment/.style={
+			font=\small\itshape, 
+			color=light-olive, 
+			align=left,
+			text width=3.5cm
+		},
+		legend/.style={
+			font=\scriptsize,
+			align=center
+		}
+		]
+		
+		% Main node with special styling
+		\node[box, fill=light-gray, minimum width=5cm, minimum height=1.5cm] (qa) 
+		{\textbf{QA Results}\\[2pt]\scriptsize Quality Assessment \& Metrics};
+		
+		% Sequential nodes below with stage numbers
+		\node[box, fill=light-smoke, below=1.2cm of qa] (prompt) 
+		{Prompt Refinement\\[2pt]\scriptsize Stage 4};
+		\node[box, fill=light-smoke, below=1.2cm of prompt] (rag) 
+		{RAG Database Updates\\[2pt]\scriptsize Stage 3};
+		\node[box, fill=light-smoke, below=1.2cm of rag] (retrain) 
+		{Model Retraining\\[2pt]\scriptsize Stage 2};
+		\node[box, fill=light-smoke, below=1.2cm of retrain] (dev) 
+		{Dev Environment\\[2pt]\scriptsize Stage 1};
+		
+		% Main vertical arrows with labels
+		\draw[arrow] (qa.south) -- node[right, font=\scriptsize, color=light-azul] {Evaluate} (prompt.north);
+		\draw[arrow] (prompt.south) -- node[right, font=\scriptsize, color=light-azul] {Optimize} (rag.north);
+		\draw[arrow] (rag.south) -- node[right, font=\scriptsize, color=light-azul] {Improve} (retrain.north);
+		\draw[arrow] (retrain.south) -- node[right, font=\scriptsize, color=light-azul] {Develop} (dev.north);
+		
+		% Feedback arrows with cleaner routing
+		\draw[feedback] (prompt.west) -- ++(-2.5,0) |- (qa.south west);
+		\draw[feedback] (rag.west) -- ++(-2.5,0) |- (qa.south west);
+		\draw[feedback] (retrain.west) -- ++(-2.5,0) |- (qa.south west);
+		\draw[feedback] (dev.west) -- ++(-2.5,0) |- (qa.south west);
+		
+		% Feedback labels on the left side
+		\node[left=0.3cm of prompt, font=\scriptsize, color=light-red, rotate=90] {Feedback Loop};
+		
+		% Comments on the right side with better alignment
+		\node[comment, right=2cm of prompt, anchor=west] (c1) 
+		{New knowledge\\added to context};
+		\node[comment, right=2cm of rag, anchor=west] (c2) 
+		{Fine-tuning on\\failure cases};
+		\node[comment, right=2cm of retrain, anchor=west] (c3) 
+		{New experiments\\initiated};
+		
+		% Connecting lines with rounded corners
+		\draw[->, thin, color=light-olive, rounded corners=4pt] 
+		(prompt.east) -- ++(1,0) |- (c1.west);
+		\draw[->, thin, color=light-olive, rounded corners=4pt] 
+		(rag.east) -- ++(1,0) |- (c2.west);
+		\draw[->, thin, color=light-olive, rounded corners=4pt] 
+		(retrain.east) -- ++(1,0) |- (c3.west);
+		
+		% Legend - more professional placement
+		\begin{scope}[shift={(0,-.3cm)}]
+			\node[legend, below=.3cm of dev] {
+				\textcolor{light-azul}{$\longrightarrow$} Main flow \quad
+				\textcolor{light-red}{$\Rightarrow$} Feedback
+			};
+		\end{scope}
+		
+		% Title annotation
+		\node[above=0.3cm of qa, font=\itshape\small, color=light-olive] 
+		{Circular Pipeline Architecture};
+		
+	\end{tikzpicture}
+\end{center}
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}clll@{}}
+	\toprule
+	\textit{Stage} &  \textit{Component} &  \textit{Role} &  \textit{Analogy} \\
+	\midrule
+	1 & Development Environment & Sandbox for experimentation & The Workshop \\
+	2 & Orchestration \& Logic & Decision-making engine & The Brain \\
+	3 & Context \& Optimization & Knowledge \& memory & The Library \\
+	4 & Prompt Management & Instruction \& control & The Playbook \\
+	5 & Quality Assurance & Validation \& feedback & The Judge \\
+	\bottomrule
+\end{tabular}

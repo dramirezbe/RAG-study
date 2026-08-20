@@ -1,0 +1,48 @@
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\renewcommand{\labelitemi}{--}
+\renewcommand{\labelitemii}{-.}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning}
+\usetikzlibrary{shadows}
+
+% Colors
+\definecolor{graylight}{RGB}{70, 70, 70}
+\definecolor{light-gray}{RGB}{245, 245, 245}
+\definecolor{light-smoke}{RGB}{255, 245, 237}
+\definecolor{light-olive}{RGB}{160, 145, 84}
+\definecolor{light-azul}{RGB}{61, 107, 222}
+\definecolor{light-red}{RGB}{184, 31, 61}
+
+\usepackage[most]{tcolorbox}
+
+% Enhanced boxes
+\newtcolorbox{promptbox}{
+	colback=light-azul!3!white,
+	colframe=light-azul!39!black,
+	fonttitle=\bfseries,
+	title=Prompt,
+	enhanced,
+	drop fuzzy shadow,
+	rounded corners=4pt,
+	boxrule=0.8pt,
+	left=6pt, right=6pt,
+	top=4pt, bottom=4pt,
+	breakable
+}
+
+\newtcolorbox{defbox}[1]{
+	colback=light-gray!12!white,
+	colframe=light-olive!70!black,
+	fonttitle=\bfseries\sffamily,
+	title={#1},
+	enhanced,
+	drop fuzzy shadow,
+	%rounded corners=2pt,
+	boxrule=0.5pt,
+	left=6pt, right=6pt,
+	top=4pt, bottom=4pt,
+	breakable
+}

@@ -1,0 +1,420 @@
+\documentclass[11pt]{report}
+
+\input{Figures/format_}
+
+\begin{document}
+\section*{\begin{center}
+		SDR-Based Spectrum Monitoring System for FM Broadcast Compliance Assessment
+\end{center}}
+
+\subsection*{Introduction} 
+\label{sec:introduction}
+\setlist[description]{font=\normalfont\itshape--\space}
+\begin{description}
+	\item[Purpose and Scope.] This document specifies the architecture, measurement framework, and processing algorithms for a Software-Defined Radio (SDR) based FM broadcast compliance monitoring system. It is intended for:
+	
+	\begin{itemize}
+		\item RF engineers designing and deploying sensor nodes;
+		\item Regulatory bodies evaluating technical adequacy and metrological traceability;
+		\item Software developers implementing DSP processing pipelines;
+		\item System operators responsible for calibration, validation, and evidence archiving.
+	\end{itemize}
+	
+	This document is primarily a framework and requirements specification. 
+	The framework addresses the complete monitoring chain with explicit treatment of calibration hierarchy, uncertainty propagation, node health, multi-node coordination, and audit-ready reporting. 
+	
+	\item[Regulatory Context.] The system targets compliance assessment under the following regulatory and technical frameworks:
+	
+	\begin{itemize}
+		\item \texttt{FCC Part 73} (United States): Technical standards for FM broadcast service, including carrier frequency tolerance, occupied bandwidth, and emission mask requirements;
+		\item \texttt{ANE Resolución 105} (applicable jurisdiction): National regulatory provisions governing FM broadcast technical parameters;
+		\item \texttt{ITU-R BS.412}: International technical standards for FM sound broadcasting;
+		\item \texttt{ISO/IEC 17025}: General requirements for the competence of testing and calibration laboratories, applicable to primary calibration of the measurement chain in controlled laboratory environments and to the evaluation of measurement uncertainty and traceability for calibration certificates issued under this framework. Field node operation shall conform to the measurement traceability principles of ISO/IEC 17025 without implying full laboratory accreditation for unattended remote sensors.
+	\end{itemize}
+	
+	For each deployment, the applicable regulatory basis shall be explicitly identified in the system configuration, measurement procedure, and reporting policy. All reported measurands, decision outcomes, and compliance determinations shall be traceable to the governing rule set, the calibration state of the measurement chain, and the documented processing and decision procedure used to produce the result.\footnote[01]{Throughout this document, the key words ``shall'', ``shall not'', ``should'', ``should not'', and ``may'' are to be interpreted as described in RFC~2119 \cite{rfc2119}. Requirements denoted by ``shall'' are mandatory for compliance with this specification.}
+\end{description}
+\newpage
+
+\subsection*{1. System-Level Requirements for SDR-Based Monitoring Architectures}
+
+\begin{itemize}[label=--]
+	
+	\item
+	\textit{Reconfigurability and Flexibility:}
+	The SDR platform shall support changes in monitoring objectives, signal-processing parameters, and compliance algorithms without hardware redesign. Functions such as demodulation, channelization, thresholding, occupancy analysis, and report generation shall be implemented in software to permit controlled adaptation to evolving regulatory requirements, extension to adjacent bands, and integration of validated processing methods. Any software or firmware change affecting measurement outputs shall be documented, version-controlled, and revalidated.
+	
+	\item
+	\textit{Cost and Deployability:}
+	The monitoring node shall be economically deployable at scale while preserving the performance required for regulatory use. Low-cost SDR hardware and embedded processing platforms may be used, provided they do not compromise frequency accuracy, calibration validity, or operational reliability. The final architecture shall be justified on the basis of both technical adequacy and total deployment cost.
+	
+	\item
+	\textit{Remote Monitoring and Data Transport:}
+	The system shall support remote transmission of measurement metadata, system-health information, and authorized derived products to a centralized server through IP-based networks. The architecture shall support continuous or scheduled delivery, local buffering during link outages, and reliable upload upon reconnection. Data products, transport rates, retention policies, and latency constraints shall be defined according to the monitoring mission, legal requirements, and available network capacity.
+	
+	\item
+	\textit{Cybersecurity and Access Control:}
+	Data in transit shall be protected using authenticated encryption, and stored records shall be protected according to the system security policy. Administrative and operator access shall be controlled through authenticated and authorized mechanisms. Audit logs shall record configuration changes, software updates, user actions, and remotely triggered monitoring operations.
+	
+	\item
+	\textit{Multi-Channel Monitoring Capacity:}
+	The DSP pipeline shall support real-time demodulation and compliance analysis of multiple FM broadcast channels within the instantaneous observation bandwidth and tuning constraints of the SDR front-end and processing platform. The deployment configuration shall specify the sustained concurrent channel count to be validated. Validation shall document processor utilization, memory consumption, storage throughput, end-to-end latency, and the maximum sustainable channel count without sample loss or measurement degradation.
+	
+	\item
+	\textit{Measurement Integrity, Calibration, and Traceability:}
+	The monitoring architecture shall preserve the metrological integrity of all reported measurands. The receive chain, including antenna, RF front-end, SDR, timing reference, and processing stages, shall support calibration, periodic verification, documented uncertainty, and reproducible performance across deployed nodes. All reported measurands, compliance decisions, alerts, and archived evidence shall be traceable to the acquisition record, receiver configuration, timing reference, calibration state, processing configuration, uncertainty characterization, and applicable regulatory rule. Any change affecting the measurement chain shall require revalidation of the corresponding calibration and reporting functions.
+	
+\end{itemize}
+
+\noindent
+To support this requirement, the system shall implement a \textit{hierarchical calibration strategy} with three tiers, aligned with the regulatory significance of the measurement.
+
+\begin{itemize}[label=--]
+	
+	\item
+	\textit{Tier 1: Primary (Laboratory) Calibration.}
+	Each monitoring node shall undergo initial end-to-end calibration in a controlled laboratory environment, traceable to national or international standards. This calibration shall establish the absolute accuracy of the measurement reference plane, typically the antenna port, and shall characterize frequency response, power accuracy, linearity, and relevant environmental sensitivities. A unique calibration certificate and electronic calibration record shall be maintained for each node.
+	
+	\item
+	\textit{Tier 2: Secondary (Field) Verification.}
+	Each node shall undergo periodic in situ verification to confirm that performance remains within acceptable limits relative to the primary calibration state. This procedure may use an internal reference source or a stable external signal. It need not re-establish absolute traceability, but shall provide a reliable check against predefined warning and alarm limits. Failure shall trigger a maintenance alert and suspend compliance use until resolved.
+	
+	\item
+	\textit{Tier 3: Relative (Channel) Calibration.}
+	For measurements that do not require absolute power accuracy, a relative calibration across the observation bandwidth shall be maintained to control gain and phase distortion in spectral measurements. This calibration may be implemented through equalization filters, pilot-based methods, or passband characterization established during primary calibration.
+	
+\end{itemize}
+
+\subsection*{2. Functional Decomposition of the Monitoring System}\;
+
+\noindent
+The architecture resulting from these design considerations is summarized in Figure~\ref{fig:Architecture}, which identifies the principal hardware and software components and their interconnections.
+
+\begin{figure}[!ht]
+	\input{Figures/SDRFMArchitecture}
+	\caption{Core Architectural Components}\label{fig:Architecture}
+\end{figure}
+
+\begin{description}
+	\item[RF Front-End (Hardware Layer):]
+	The monitoring node employs a SDR receiver as the antenna-coupled RF front end for operation in the VHF-II broadcast band (87.5--108~MHz). This stage captures incident RF energy, tunes the band of interest, and produces digitized complex baseband samples for downstream processing. A VHF-II antenna interfaces to the SDR input, and an LNA may be added when required to compensate for feedline loss or weak received signals. The suitability of this front end is governed by instantaneous bandwidth, dynamic range, frequency-reference accuracy and stability, noise figure, and gain configuration, since these parameters bound the fidelity of derived compliance measurands. 
+	
+	\item[Signal Acquisition and Digitization:]
+	The SDR streams raw complex baseband (I/Q) samples to the embedded host processor through a high-speed USB interface. These samples represent the instantaneous tuned observation bandwidth and permit simultaneous inspection of multiple contiguous FM broadcast channels within a single acquisition window, reducing the need for sequential retuning. The selected sample rate shall be validated on the target platform to ensure sustained operation without dropped samples, taking into account USB throughput, host buffering, and processing load.
+	
+	\item[Software Processing Engine:]
+	The software processing engine implements the end-to-end DSP pipeline for \emph{FM broadcast compliance monitoring}. Its functions may include spectrum estimation, channelization, carrier detection, demodulation, occupancy assessment, feature extraction, alarm generation, and compliance-metric evaluation. The primary output of this layer is not user-traffic recovery, but reported measurands, decision outcomes, and supporting evidence suitable for regulatory review.
+	
+	\item[Data Management and Reporting Layer:]
+	Processed outputs shall be stored in a structured backend using time-stamped records and associated metadata, including frequency, site, station identifier, measurement type, and compliance status. This layer supports historical trend analysis, event review, audit-ready report generation, controlled remote access through an API and monitoring dashboard, and automated notifications when predefined thresholds are exceeded in accordance with the operational monitoring policy.
+	
+\end{description}
+
+\newpage
+\subsection*{3. FM Compliance Measurands and Traceability Requirements}\;
+
+\noindent
+For SDR-based FM broadcast monitoring, a \emph{measurand} is a defined physical or derived quantity reported by the monitoring system for regulatory assessment. The architecture shall distinguish between \emph{primary compliance measurands}, which directly support conformance evaluation, and \emph{secondary observables}, which provide diagnostic or evidentiary support but do not by themselves establish compliance.
+
+\begin{description}
+	
+	\item[Primary Compliance Measurands:]
+	Primary compliance measurands are those used directly to assess technical conformity under the applicable regulatory framework. They may include:
+	\begin{itemize}
+		\item carrier frequency or frequency offset relative to the assigned channel, evaluated against the applicable regulatory tolerance (e.g., FCC Part 73.1545 specifies $\pm2$~kHz or $\pm0.005$\% of the assigned carrier frequency, whichever is greater);
+		\item calibrated received power or spectral power at a defined reference plane within the observation bandwidth, with expanded uncertainty determined by the end-to-end calibration uncertainty budget and recorded in the node calibration certificate;
+		\item field strength, when supported by antenna-factor characterization and end-to-end calibration of the receive chain, with expanded uncertainty determined by the calibration uncertainty budget;
+		\item occupied bandwidth and related spectral-containment indicators;
+		\item adjacent-channel leakage or out-of-band emission level;
+		\item modulation-related quantities, including peak deviation and, where required, multiplex power;
+		\item channel occupancy over time, defined as the fraction of observation intervals within a defined time window in which the channel power or carrier detection metric exceeds a documented threshold, including persistence metrics quantifying temporal continuity.
+	\end{itemize}
+	
+	\item[Secondary Observables:]
+	Secondary observables support interpretation, diagnosis, and audit review. They shall not be treated as standalone compliance determinations unless explicitly required by the governing measurement procedure. They may include:
+	\begin{itemize}
+		\item demodulated audio excerpts;
+		\item baseband or multiplex spectrum snapshots;
+		\item spectrograms and time-frequency visualizations;
+		\item anomaly scores or classifier outputs produced by statistical or machine-learning methods.
+	\end{itemize}
+	
+	\item[Measurement Conditions, Metadata, and Traceability:]
+	Each reported measurand shall be stored together with its measurement conditions and associated metadata, including observation bandwidth, center frequency, sample rate, receiver gain state, antenna configuration, reference plane, calibration state, calibration record identifier, site identifier, timestamp reference, and processing-software version. For derived quantities, the processing method, averaging interval, uncertainty characterization, decision rule, and applicable regulatory threshold shall also be recorded to support verification, reproducibility, inter-node comparison, and technical review.
+	
+	\item[Authoritative Regulatory Data Source:]
+	The system shall maintain an authoritative source of assigned channel parameters and regulatory thresholds, drawn from a validated regulatory license database or equivalent authoritative configuration, to support frequency error computation and threshold exceedance evaluation. The data source version, update timestamp, and applicable regulatory rule set shall be recorded in measurement metadata.
+	
+\end{description}
+
+Table~\ref{tab:fm_measurands_operational} defines the principal compliance measurands used by the SDR-based FM monitoring system. For each quantity, it specifies the operational definition, units, estimation method, calibration dependence, reporting cadence, and applicable compliance reference.
+
+\begin{table}[h!]
+	\centering
+	\renewcommand{\arraystretch}{1.3}
+	\caption{Principal FM Compliance Measurands}\label{tab:fm_measurands_operational}
+	\begin{tabular}{@{}p{3.2cm}p{2.8cm}p{2.2cm}p{2.8cm}p{2.8cm}@{}}
+		\toprule
+		\textbf{Measurand} & \textbf{Operational Definition} & \textbf{Units} & \textbf{Estimation Method} & \textbf{Calibration Dependence} \\ \midrule
+		Carrier frequency error & Deviation of estimated carrier from assigned channel frequency & kHz & Spectral peak or pilot-tone estimation & Tier 1 (frequency reference) \\
+		Calibrated received power & Power at defined reference plane within channel bandwidth & dBm & Integrated PSD with gain correction & Tier 1, Tier 2 (absolute gain) \\
+		Field strength & Incident field strength derived from received power and antenna factor & dB$\mu$V/m & Power + antenna factor + cable loss & Tier 1 (full chain) \\
+		Occupied bandwidth & Frequency span containing specified percentage of total channel power & kHz & Spectral containment analysis & Tier 3 (relative response) \\
+		Adjacent-channel leakage & Power in adjacent channel relative to in-band reference & dB & Offset spectral integration & Tier 1, Tier 3 \\
+		Peak deviation & Maximum frequency excursion of FM carrier & kHz & FM demodulation and peak detection & Tier 1 (frequency accuracy) \\
+		Channel occupancy & Fraction of intervals exceeding detection threshold over defined window & \% or ratio & Time-series threshold crossing with persistence filter & Tier 2 (detection threshold stability) \\ \bottomrule
+	\end{tabular}
+\end{table}
+
+\paragraph*{Classification Framework:} \;
+
+\noindent The SDR monitoring system shall classify each measurand based on hardware-constrained measurement quality. This classification dictates permissible regulatory use and defines required validation, calibration, and uncertainty characterization.
+
+Four capability classes are defined:
+
+\begin{description}
+	\item[Compliance-Grade.] The measurand may be used directly to support formal regulatory compliance determinations, provided that all calibration, validation, and uncertainty requirements specified in this document are satisfied. The hardware platform, processing implementation, and end-to-end measurement chain have been validated to meet the applicable regulatory tolerance and uncertainty limits.
+	
+	\item[Screening-Grade.] The measurand may be used for anomaly detection, event screening, situational awareness, or preliminary assessment, but it shall {not} be used as the sole basis for a formal non-compliance determination without corroboration from a compliance-grade measurement or independent validation. Screening-grade measurements may trigger alerts, operator review, or deployment of higher-capability instrumentation, but they do not by themselves constitute regulatory evidence.
+	
+	\item[Unsupported.] The measurand cannot be reliably estimated with the deployed hardware configuration and shall not be reported for either compliance or screening use. Attempting to measure an unsupported quantity may produce outputs that are numerically valid but metrologically meaningless or systematically biased beyond correction.
+	
+	\item[Conditional Compliance-Grade.] The measurand may reach compliance-grade status on this hardware platform, but only after all enumerated preconditions in the Enhancement column of Table 3 have been implemented, independently validated, and recorded in a calibration certificate. Prior to that validation, the measurand shall be treated as Screening-Grade for all regulatory purposes. The preconditions are mandatory, not recommended.
+\end{description}
+
+\paragraph*{Metadata Requirements for Capability-Dependent Reporting}\;
+
+\noindent Every reported measurand shall include in its metadata record:
+
+\begin{itemize}
+	\item The capability class under which it was acquired (compliance-grade, screening-grade, unsupported),
+	\item Hardware platform identifier and configuration (ADC resolution, gain state, reference source),
+	\item Applicable calibration tier(s) and calibration record identifier,
+	\item Measurement uncertainty or, for screening-grade results, an explicit uncertainty disclaimer,
+	\item Any hardware augmentation applied (external GPSDO, LNA, filter),
+	\item Software version and processing-method identifier.
+\end{itemize}
+
+Screening-grade measurands shall be flagged in all reports and databases as \texttt{FOR\_SCREENING\_ONLY} and shall not appear in formal compliance summaries without explicit override justification and independent validation.
+
+\paragraph*{Uncertainty Budget and Reporting}\;
+
+\noindent 
+All measurements intended for regulatory compliance use shall be accompanied by a documented uncertainty evaluation in accordance with the Guide to the Expression of Uncertainty in Measurement (GUM) \cite{JCGM100:2008}. The uncertainty budget shall account for all known sources of random and systematic error, shall be traceable to the calibration hierarchy defined above, and shall be reported alongside the measurand value in all compliance records and evidence archives.
+
+Uncertainty Classification, the associated Uncertainty-Aware Compliance Decisions, and Periodic Re-Evaluation Requirements are detailed in Appendix~\ref{app:uncertainty-budget}.
+
+\subsection*{4. Node-Level DSP Pipeline for FM Compliance Monitoring}\;
+
+\noindent
+The compliance monitoring pipeline transforms raw complex baseband observations into reported measurands, decision outcomes, and supporting evidence.
+
+The principal processing stages are shown in Fig.~\ref{fig:processing_pipeline} and described below.
+
+\begin{figure}[!ht]
+	\input{Figures/FMPipeline}
+	\label{fig:processing_pipeline}
+\end{figure}
+
+\begin{description}
+	
+	\item[Wideband Acquisition \& Conditioning:]
+	Raw I/Q samples are acquired from the SDR front end together with receiver-configuration and timing metadata. This stage establishes the wideband observation used by all downstream analyses.
+	
+	Its principal functions are:
+	\begin{itemize}
+		\item \textit{Hardware configuration:} initialization of SDR operating parameters, including center frequency, sample rate, gain state, and front-end amplification settings;
+		
+		\item \textit{Sample streaming:} transfer of raw complex baseband samples from the SDR device to the embedded host processor through the USB interface;
+		
+		\item \textit{Buffer management:} temporary storage and flow control to reduce the risk of sample loss during sustained acquisition;
+		
+		\item \textit{Metadata association:} tagging of captured data with timing, configuration, and calibration-state information;
+		
+		\item \textit{Signal conditioning:} preliminary preparation of the wideband observation, including DC-offset mitigation, optional digital frequency translation, and other conditioning steps required before channelization and spectral analysis.
+	\end{itemize}
+	
+	\item[Channelization, Isolation \& Tracking:]
+	The conditioned wideband observation is analyzed to detect active FM broadcast channels within the monitored span. Detected channels are isolated and tracked over time to support stable downstream measurement.
+	
+	Its principal functions are:
+	\begin{itemize}
+		\item \textit{Wideband spectral survey:} estimation of spectral content over the monitored band to identify candidate FM emissions and their approximate center frequencies and occupied regions;
+		
+		\item \textit{Channel detection:} application of detection criteria to distinguish active broadcast channels from noise, interference, or spurious responses;
+		
+		\item \textit{Channel isolation:} extraction of individual FM channels through digital channelization, filtering, and frequency selection;
+		
+		\item \textit{Frequency tracking:} monitoring of the spectral position of each detected channel to compensate for drift, tuning offsets, or minor carrier variations;
+		
+		\item \textit{Persistence assessment:} evaluation of channel continuity and temporal presence to support occupancy estimation, event detection, and stable downstream demodulation.
+	\end{itemize}
+	
+	\item[Optional Per-Channel Demodulation \& Identification:]
+	Each isolated FM channel is demodulated to recover the signal products required for modulation analysis. Auxiliary identification functions may be used to support station recognition, event attribution, or diagnostic interpretation, but they do not constitute primary compliance criteria.
+	
+	Its principal functions are:
+	\begin{itemize}
+		\item \textit{FM demodulation:} conversion of each isolated RF channel into its corresponding baseband representation for subsequent compliance analysis;
+		
+		\item \textit{Composite baseband recovery:} extraction of the FM multiplex signal components relevant to deviation analysis, pilot detection, stereo-related features, and other modulation-dependent measurements;
+		
+		\item \textit{Baseband conditioning:} preparation of the recovered signal through filtering, normalization, and related operations required by the adopted estimation methods;
+		
+		\item \textit{Auxiliary station identification:} use of identifying signal characteristics, such as spectral signatures, pilot structure, metadata cues, or program-dependent features, to support station recognition and event attribution;
+		
+		\item \textit{Secondary feature classification:} optional classification of non-primary signal attributes for diagnostic interpretation, anomaly screening, or evidentiary support.
+	\end{itemize}
+	
+	\item[Compliance Measurand Estimation:]
+	For each monitored channel, the system computes the operationally defined measurands required for regulatory assessment. Its main functions are:
+	\begin{itemize}
+		\item \textit{Carrier-frequency estimation:} determination of channel center frequency and its deviation relative to the assigned broadcast frequency, referenced to the adopted frequency standard and calibration state;
+		
+		\item \textit{Power-related estimation:} computation of calibrated received power, spectral power, or other amplitude-related quantities at the defined reference plane, subject to the applicable gain and frequency-response corrections;
+		
+		\item \textit{Bandwidth and spectral-containment estimation:} evaluation of occupied bandwidth and related spectral-containment indicators from the recorded spectrum using the adopted analysis bandwidth and decision rule;
+		
+		\item \textit{Adjacent- and out-of-band emission analysis:} measurement of spectral leakage or emission level in adjacent-channel and out-of-band regions relative to the in-band reference level or other stated compliance reference;
+		
+		\item \textit{Modulation-related estimation:} extraction of deviation-based and multiplex-related quantities from the demodulated baseband or composite signal;
+		
+		\item \textit{Occupancy estimation:} determination of channel occupancy over time using the documented detection rule, observation window, and revisit strategy;
+		
+		\item \textit{Result association:} association of each reported measurand with the relevant processing configuration, averaging interval, calibration state, and metadata.
+	\end{itemize}
+	
+	\item[Decision Logic \& Alerting:]
+	The estimated measurands are compared against applicable regulatory limits, license conditions, or monitoring rules. When threshold exceedances or anomalous conditions are detected, the system generates alerts and records the supporting decision context.
+	
+	Its principal functions are:
+	\begin{itemize}
+		\item \textit{Compliance-rule matching:} comparison of each estimated measurand against the applicable thresholds, license requirements, or monitoring criteria;
+		
+		\item \textit{Decision logic execution:} application of the adopted decision rules to classify the observed channel state as compliant, non-compliant, uncertain, or requiring further review;
+		
+		\item \textit{Threshold exceedance detection:} identification of events in which one or more measurands depart from their permitted range;
+		
+		\item \textit{Anomaly handling:} processing of abnormal system or signal conditions that merit operator attention even when a formal violation is not established;
+		
+		\item \textit{Alert generation:} creation of notifications, warning flags, or event markers for operator review;
+		
+		\item \textit{Decision-context recording:} storage of supporting measurands, timestamps, processing parameters, rule set, and relevant metadata required to justify the alert or compliance decision.
+	\end{itemize}
+	
+	The rule evaluation stage shall compare each estimated measurand $x$ against the applicable regulatory threshold $T$, drawn from the authoritative license database defined in Section 3, using an explicitly defined decision rule that accounts for measurement uncertainty $U$. The decision logic depends on the regulatory framework, risk tolerance, and adopted compliance philosophy. Three supported decision frameworks are detailed in Appendix~\ref{app:decision-logic}.
+	
+	\item[Reporting \& Evidence Archiving:]
+	The final stage stores reported results, selected signal products, and decision records in a structured backend for later retrieval, review, and audit.
+	
+	Its principal functions are:
+	\begin{itemize}
+		\item \textit{Measurement persistence:} storage of reported measurands, decision outcomes, and associated metadata in a structured backend;
+		
+		\item \textit{Evidence preservation:} retention of selected supporting artifacts, such as PSD estimates, spectrograms, demodulated excerpts, and event-linked channel records;
+		
+		\item \textit{Compliance reporting:} generation of summaries, station-level assessment records, and historical trend outputs suitable for operational monitoring and formal review;
+		
+		\item \textit{Alert-log management:} archival of alert histories, event markers, severity levels, and operator-facing notifications;
+		
+		\item \textit{Controlled access and retrieval:} provision of structured mechanisms for querying, visualizing, and exporting stored results in accordance with the monitoring policy and access-control model.
+	\end{itemize}
+	
+\end{description}
+
+The estimation background of the processing pipeline is specified for each Compliance Measurand in Appendix~\ref{app:decision-logic}.
+
+% ==================================================================
+\subsection*{5. Array-Level Coordination for Distributed Regulatory Monitoring}\;
+
+\noindent In a distributed regulatory monitoring deployment, the sensor array shall be treated as a coordinated measurement system rather than as a collection of independent SDR nodes. Each node may acquire, preprocess, and estimate local measurands independently, but any array-level conclusion shall be formed only after the participating nodes have been brought into a common calibration, timing, reference, and health framework. This layer is necessary to ensure that multi-node conclusions remain technically comparable, metrologically defensible, and auditable under regulatory review.
+
+\begin{description}
+	\item[Inter-node calibration.] Each node shall retain its own primary, field, and relative calibration records, but the array shall additionally maintain an inter-node calibration model that quantifies residual differences between nodes for the measurands intended for joint use. This model shall include, at minimum, frequency-reference offset, gain bias, passband-shape deviation, and timestamp offset. Site-dependent propagation effects, including path loss, terrain shadowing, and clutter, are not calibration artifacts and shall be addressed through propagation modeling or geometric estimation, not through inter-node calibration. Inter-node calibration shall be verified periodically using a shared reference signal, a transportable reference source, or a controlled over-the-air reference transmission. Array-level fusion shall use only nodes whose residual mismatch remains within predefined acceptance limits for the relevant measurand.
+	\item[Timing alignment.] All nodes contributing to common event detection, occupancy estimation, or corroborated compliance decisions shall operate against a common time base traceable to UTC or another approved reference. Timestamp uncertainty, holdover behavior, synchronization-loss state, and timing-validation results shall be recorded in metadata. For array processing, observations shall be aligned to a documented common epoch and window definition, with explicit tolerance on allowable inter-node skew. If the required timing tolerance is exceeded, the affected node may continue local monitoring, but it shall be excluded from time-critical multi-node conclusions until synchronization is restored.
+	\item[Common reference distribution.] The array shall distribute or derive a common frequency and time reference appropriate to the target measurement class. For carrier-frequency compliance, the use of a disciplined external reference shall be preferred where the node-local oscillator is otherwise insufficiently stable for the required tolerance. The reference architecture shall specify the reference source, distribution method, holdover strategy, fault detection, and the procedure followed when a node loses reference lock. Any measurement obtained during reference loss shall be flagged according to its impact on metrological validity and may be downgraded to screening-only use where required.
+	\item[Sensor health coordination.] The array management layer shall continuously supervise node health using both hardware and measurement-quality indicators. These shall include SDR connectivity, sample-loss status, gain state, clipping, DC contamination, I/Q residuals, thermal alarms, storage availability, network reachability, calibration validity, synchronization state, and reference-lock state. Health supervision shall classify each node as at least one of the following: operational for compliance use, operational for screening only, degraded, or unavailable. Array-level conclusions shall only use nodes whose health state is compatible with the uncertainty and decision rule of the associated measurand.
+	\item[Cross-node consistency checks.] When multiple nodes observe the same licensed emission or event, the system shall perform cross-node consistency analysis before issuing a fused regulatory conclusion. The consistency checks shall compare overlapping measurands after correcting for known instrumental differences. At minimum, the framework shall evaluate consistency of carrier-frequency estimate, event time, occupancy declaration, and any jointly used spectral or modulation indicator. Persistent disagreement beyond the expected uncertainty budget shall trigger one of three outcomes: exclusion of the outlying node, classification of the event as uncertain, or escalation for operator review. Cross-node agreement shall strengthen confidence, but disagreement shall never be silently averaged away.
+	\item[Contribution of multiple nodes to one regulatory conclusion.] The framework shall define a formal fusion rule for converting node-level results into an array-level conclusion. That rule shall specify:
+	\begin{enumerate}
+		\item eligibility criteria for participating nodes;
+		\item the measurands that may be fused and those that shall remain node-local;
+		\item weighting factors based on calibration state, uncertainty, health, and geometry;
+		\item the required corroboration level for declaring a non-compliance event; and
+		\item how inconclusive or conflicting evidence is handled.
+	\end{enumerate}
+	
+	For example, the array may adopt a rule in which a regulatory alert is issued only when at least two eligible nodes independently report the same exceedance within a defined time window and with compatible uncertainty bounds, while a single-node exceedance is retained as a provisional alert pending corroboration or review. The exact fusion rule shall depend on the measurand: carrier-frequency anomalies may be corroborated by agreement in calibrated frequency error, whereas occupancy or interference events may rely on synchronized temporal coincidence across nodes.
+	\item[Array-level traceability and evidence.] Every fused decision shall preserve the full chain of evidence linking the array conclusion to the underlying node records. The archived record shall identify the participating nodes, their calibration states, synchronization states, health states, local uncertainties, fusion weights, consistency-check outcomes, and the decision-rule version used to form the final conclusion. This ensures that the array result remains auditable and can be reconstructed during technical or legal review.
+	\item[Degraded-mode operation.] The framework shall explicitly distinguish between full array operation and degraded array operation. Loss of one node, loss of common reference, excessive timing skew, or calibration expiry shall not necessarily halt all monitoring, but it shall automatically restrict which measurement classes remain valid. In degraded mode, the system may continue screening, situational awareness, or evidence collection, while suspending array-level compliance determinations that depend on the missing capability.
+\end{description}
+
+\newpage
+\appendix
+\section*{Appendix: Uncertainty Budget Framework}\label{app:uncertainty-budget}
+
+\noindent This appendix specifies the uncertainty evaluation framework for compliance-grade measurands. All uncertainty calculations shall follow the principles of the Guide to the Expression of Uncertainty in Measurement (GUM).
+
+\subsection*{Uncertainty Classification}
+
+\begin{description}
+	\item[Type A Evaluation:] Evaluation of uncertainty by the statistical analysis of series of observations. Sources include repeated measurement variance, environmental fluctuation during observation, and finite averaging interval effects.
+	\item[Type B Evaluation:] Evaluation of uncertainty by means other than the statistical analysis of series of observations. Sources include calibration certificate uncertainties, manufacturer specifications for the SDR and antenna, antenna factor uncertainty, cable loss uncertainty, digital processing gain uncertainty, and environmental correction uncertainty.
+\end{description}
+
+\subsection*{Combined and Expanded Uncertainty}
+
+The combined standard uncertainty $u_c(y)$ shall be computed as the positive square root of the sum of the variance contributions from all significant Type A and Type B sources, assuming independent inputs:
+
+\[
+u_c(y) = \sqrt{\sum_{i} u_i^2(y)}
+\]
+
+The expanded uncertainty $U$ shall be obtained by multiplying the combined standard uncertainty by a coverage factor $k$:
+
+\[
+U = k \cdot u_c(y)
+\]
+
+For compliance-grade measurands, the coverage factor shall be $k=2$ unless a different value is justified by the statistical distribution and documented in the calibration record, corresponding to approximately 95\% coverage for a normal distribution.
+
+\subsection*{Uncertainty Reporting}
+
+Every compliance-grade measurand shall be reported as $y \pm U$, accompanied by:
+\begin{itemize}
+	\item the combined standard uncertainty $u_c(y)$;
+	\item the coverage factor $k$ and the corresponding confidence level;
+	\item a summary of the principal uncertainty contributions;
+	\item the calibration record identifier and date of validity.
+\end{itemize}
+
+Screening-grade measurands shall carry an explicit uncertainty disclaimer stating that the expanded uncertainty has not been fully characterized for regulatory use.
+
+\section*{Appendix: Decision Logic Frameworks}\label{app:decision-logic}
+
+\noindent This appendix defines the three supported decision frameworks for comparing an estimated measurand $x$ against a regulatory threshold $T$ in the presence of measurement uncertainty $U$.
+
+\subsection*{Framework 1: Simple Threshold}
+
+The measurand is declared non-compliant if $x > T$ and compliant if $x \le T$. This framework shall be used only when the expanded uncertainty $U$ is demonstrably negligible relative to the regulatory tolerance band, or when the applicable regulation explicitly mandates a deterministic comparison.
+
+\subsection*{Framework 2: Guard-Band (Decision Rule with Uncertainty Margin)}
+
+The measurand is declared:
+\begin{itemize}
+	\item non-compliant if $x - U > T$;
+	\item compliant if $x + U < T$;
+	\item inconclusive if $|x - T| \le U$.
+\end{itemize}
+
+This framework prevents false non-compliance declarations when uncertainty overlaps the threshold. Inconclusive results shall trigger operator review or extended observation.
+
+\subsection*{Framework 3: Probabilistic Compliance}
+
+The system computes the probability $P(x > T)$ given the estimated value and its uncertainty distribution. A non-compliance declaration requires that $P(x > T)$ exceed a predefined confidence level $P_{\text{min}}$ (e.g., 95\%). The probability model and $P_{\text{min}}$ shall be documented in the monitoring policy and recorded in decision metadata.
+ 
+\end{document}
+
+
+
+ 

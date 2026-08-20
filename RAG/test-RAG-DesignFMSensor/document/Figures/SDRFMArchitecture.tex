@@ -1,0 +1,85 @@
+	\begin{center}
+	\begin{tikzpicture}[
+		node distance=1.8cm,
+		auto,
+		>=latex',
+		block/.style={
+			rectangle,
+			draw,
+			fill=#1!10,
+			text width=9em,
+			text centered,
+			rounded corners,
+			minimum height=5em,
+			drop shadow,
+			font=\small\bfseries
+		},
+		block/.default=light-azul,
+		line/.style={
+			draw,
+			-latex',
+			line width=1.5pt,
+			color=light-azul
+		},
+		spec/.style={
+			font=\tiny,
+			text width=8em,
+			text centered,
+			color=gray
+		}
+		]
+		
+		% RF Front-End Block
+		\node[block=light-azul] (rf) {RF Front-End};
+		\node[spec,below=0.2cm of rf] (rf-spec) {HackRF\\87.5-108 MHz\\Up to 20 MS/s};
+		
+		% Processing Unit Block
+		\node[block=light-olive,below=of rf] (proc) {Processing Unit};
+		\node[spec,below=0.2cm of proc] (proc-spec) {Dragonboard/RPi/PC\\GNU Radio / Python\\Spectrum Sensing};
+		
+		% Remote Monitoring Block
+		\node[block=light-red,below=of proc] (monitor) {Remote Monitoring Interface};
+		\node[spec,below=0.2cm of monitor] (monitor-spec) {Web Dashboard\\Database\\Real-time Viz};
+		
+		% Connection Arrows
+		\path[line] (rf) -- node[midway,right,font=\small] {\qquad USB} (proc);
+		\path[line] (proc) -- node[midway,right,font=\small] {\qquad Internet} (monitor);
+		
+		% Antenna Icon
+		\node[above=.69cm of rf, circle, draw, fill=light-azul!20, minimum size=1cm] (antenna) {};
+		\draw[thick] (antenna.north) -- ++(0,0.5);
+		\draw[thick] (antenna.south) -- ++(0,-0.3);
+		\draw[thick] (antenna.east) -- ++(0.3,0);
+		\draw[thick] (antenna.west) -- ++(-0.3,0);
+		\node[above=0.3cm of antenna, font=\small\bfseries] {Antenna};
+		
+		% Cloud/Internet Icon
+		\node[right=2cm of proc, cloud, draw, fill=light-red!20, 
+		cloud puffs=10, minimum width=2.5cm, minimum height=1.5cm] (cloud) {};
+		\node[above=0.2cm of cloud, font=\small\bfseries] {Internet};
+		\path[line] (proc) -- (cloud);
+		
+		% Database Icon
+		\node[left=2cm of proc, cylinder, draw, fill=light-olive!20, 
+		shape border rotate=90, minimum height=2cm, minimum width=1.5cm] (db) {};
+		\node[below=0.2cm of db, font=\small\bfseries] {Database};
+		\path[line] (proc) -- (db);
+		
+		% Title
+		\node[above=3.0cm of rf, font=\Large\bfseries, color=light-azul] {SDR Spectrum Sensing System};
+		\node[above=2.52cm of rf, font=\small, color=gray] {For FM Broadcasting Monitoring};
+		
+		% Legend
+		\begin{scope}[shift={(-3,-9.9)}]
+			\node[rectangle, draw, fill=light-azul!10, minimum width=2cm, minimum height=0.15cm] (leg1) {};
+			\node[right=0.2cm of leg1, font=\small] {Hardware};
+			
+			\node[rectangle, draw, fill=light-olive!10, minimum width=2cm, minimum height=0.15cm, right=2cm of leg1] (leg2) {};
+			\node[right=0.2cm of leg2, font=\small] {Software};
+			
+			\node[rectangle, draw, fill=light-red!10, minimum width=2cm, minimum height=0.15cm, right=2cm of leg2] (leg3) {};
+			\node[right=0.2cm of leg3, font=\small] {Platform};
+		\end{scope}
+		
+	\end{tikzpicture}
+\end{center}

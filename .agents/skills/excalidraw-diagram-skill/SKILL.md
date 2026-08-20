@@ -7,8 +7,6 @@ description: Create Excalidraw diagram JSON files that make visual arguments. Us
 
 Generate `.excalidraw` JSON files that **argue visually**, not just display information.
 
-**Setup:** If the user asks you to set up this skill (renderer, dependencies, etc.), see `README.md` for instructions.
-
 ## Customization
 
 **All colors and brand-specific styles live in one file:** `references/color-palette.md`. Read it before generating any diagram and use it as the single source of truth for all color choices — shape fills, strokes, text colors, evidence artifact backgrounds, everything.
@@ -200,14 +198,14 @@ Before JSON, mentally trace how the eye moves through the diagram. There should 
 ### Step 5: Generate JSON
 Only now create the Excalidraw elements. **See below for how to handle large diagrams.**
 
-### Step 6: Render & Validate (MANDATORY)
-After generating the JSON, you MUST run the render-view-fix loop until the diagram looks right. This is not optional — see the **Render & Validate** section below for the full process.
+### Step 6: Validate JSON & Layout
+Verify that the JSON is valid, element IDs and bindings match, coordinates are evenly spaced, and elements follow the visual hierarchy and color guidelines. The diagram can be opened and viewed directly in the local Excalidraw UI.
 
 ---
 
 ## Large / Comprehensive Diagram Strategy
 
-**For comprehensive or technical diagrams, you MUST build the JSON one section at a time.** Do NOT attempt to generate the entire file in a single pass. This is a hard constraint — Claude Code has a ~32,000 token output limit per response, and a comprehensive diagram easily exceeds that in one shot. Even if it didn't, generating everything at once leads to worse quality. Section-by-section is better in every way.
+**For comprehensive or technical diagrams, you MUST build the JSON one section at a time.** Do NOT attempt to generate the entire file in a single pass. This is a hard constraint — output limits apply, and generating everything at once leads to worse quality. Section-by-section is better in every way.
 
 ### The Section-by-Section Workflow
 
@@ -226,11 +224,11 @@ After all sections are in place, read through the complete JSON and check:
 - Is the overall spacing balanced, or are some sections cramped while others have too much whitespace?
 - Do IDs and bindings all reference elements that actually exist?
 
-Fix any alignment or binding issues before rendering.
+Fix any alignment or binding issues before finalizing.
 
-**Phase 3: Render & validate**
+**Phase 3: Verify & Save**
 
-Now run the render-view-fix loop from the Render & Validate section. This is where you'll catch visual issues that aren't obvious from JSON — overlaps, clipping, imbalanced composition.
+Verify that all coordinates, bounding boxes, and bindings are mathematically aligned. The user can view, edit, and export the diagram directly in their local Excalidraw editor.
 
 ### Section Boundaries
 
@@ -444,72 +442,6 @@ See `references/element-templates.md` for copy-paste JSON templates for each ele
 
 ---
 
-## Render & Validate (MANDATORY)
-
-You cannot judge a diagram from JSON alone. After generating or editing the Excalidraw JSON, you MUST render it to PNG, view the image, and fix what you see — in a loop until it's right. This is a core part of the workflow, not a final check.
-
-### How to Render
-
-```bash
-cd .claude/skills/excalidraw-diagram/references && uv run python render_excalidraw.py <path-to-file.excalidraw>
-```
-
-This outputs a PNG next to the `.excalidraw` file. Then use the **Read tool** on the PNG to actually view it.
-
-### The Loop
-
-After generating the initial JSON, run this cycle:
-
-**1. Render & View** — Run the render script, then Read the PNG.
-
-**2. Audit against your original vision** — Before looking for bugs, compare the rendered result to what you designed in Steps 1-4. Ask:
-- Does the visual structure match the conceptual structure you planned?
-- Does each section use the pattern you intended (fan-out, convergence, timeline, etc.)?
-- Does the eye flow through the diagram in the order you designed?
-- Is the visual hierarchy correct — hero elements dominant, supporting elements smaller?
-- For technical diagrams: are the evidence artifacts (code snippets, data examples) readable and properly placed?
-
-**3. Check for visual defects:**
-- Text clipped by or overflowing its container
-- Text or shapes overlapping other elements
-- Arrows crossing through elements instead of routing around them
-- Arrows landing on the wrong element or pointing into empty space
-- Labels floating ambiguously (not clearly anchored to what they describe)
-- Uneven spacing between elements that should be evenly spaced
-- Sections with too much whitespace next to sections that are too cramped
-- Text too small to read at the rendered size
-- Overall composition feels lopsided or unbalanced
-
-**4. Fix** — Edit the JSON to address everything you found. Common fixes:
-- Widen containers when text is clipped
-- Adjust `x`/`y` coordinates to fix spacing and alignment
-- Add intermediate waypoints to arrow `points` arrays to route around elements
-- Reposition labels closer to the element they describe
-- Resize elements to rebalance visual weight across sections
-
-**5. Re-render & re-view** — Run the render script again and Read the new PNG.
-
-**6. Repeat** — Keep cycling until the diagram passes both the vision check (Step 2) and the defect check (Step 3). Typically takes 2-4 iterations. Don't stop after one pass just because there are no critical bugs — if the composition could be better, improve it.
-
-### When to Stop
-
-The loop is done when:
-- The rendered diagram matches the conceptual design from your planning steps
-- No text is clipped, overlapping, or unreadable
-- Arrows route cleanly and connect to the right elements
-- Spacing is consistent and the composition is balanced
-- You'd be comfortable showing it to someone without caveats
-
-### First-Time Setup
-If the render script hasn't been set up yet:
-```bash
-cd .claude/skills/excalidraw-diagram/references
-uv sync
-uv run playwright install chromium
-```
-
----
-
 ## Quality Checklist
 
 ### Depth & Evidence (Check First for Technical Diagrams)
@@ -535,18 +467,14 @@ uv run playwright install chromium
 14. **Flow**: Clear visual path for the eye to follow
 15. **Hierarchy**: Important elements are larger/more isolated
 
-### Technical
+### Technical & JSON Integrity
 16. **Text clean**: `text` contains only readable words
 17. **Font**: `fontFamily: 3`
 18. **Roughness**: `roughness: 0` for clean/modern (unless hand-drawn style requested)
 19. **Opacity**: `opacity: 100` for all elements (no transparency)
 20. **Container ratio**: <30% of text elements should be inside containers
-
-### Visual Validation (Render Required)
-21. **Rendered to PNG**: Diagram has been rendered and visually inspected
-22. **No text overflow**: All text fits within its container
-23. **No overlapping elements**: Shapes and text don't overlap unintentionally
-24. **Even spacing**: Similar elements have consistent spacing
-25. **Arrows land correctly**: Arrows connect to intended elements without crossing others
-26. **Readable at export size**: Text is legible in the rendered PNG
-27. **Balanced composition**: No large empty voids or overcrowded regions
+21. **No text overflow**: Coordinates and widths ensure text fits within its container
+22. **No overlapping elements**: Shapes and text are positioned with proper padding
+23. **Even spacing**: Similar elements have consistent spacing
+24. **Arrows land correctly**: Arrow startBinding and endBinding connect to valid element IDs
+25. **Balanced composition**: Clean layout with clear visual flow

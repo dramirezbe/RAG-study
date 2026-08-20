@@ -1,0 +1,48 @@
+	\centering
+\vspace*{.3cm}
+\begin{tikzpicture}[
+	% Style definitions
+	stage/.style={scale=0.9,
+		rectangle,
+		draw=blue!60!black,
+		fill=blue!10,
+		minimum width=2.1cm,
+		minimum height=1.5cm,
+		text width=1.8cm,
+		align=center,
+		font=\small\sffamily,
+		rounded corners=2pt,
+		drop shadow
+	},
+	arrow/.style={
+		->,
+		>=stealth,
+		thick,
+		blue!60!black
+	},
+	node distance=0.3cm
+	]
+	% Pipeline stages
+	\node[stage] (S1) { Wideband Acquisition\\ Conditioning};
+	\node[stage, right=of S1] (S2) {Channeli-\\zation \& Tracking};
+	\node[stage, right=of S2] (S3) {Per-Channel \\Demodulation\\Identification};
+	\node[stage, right=of S3] (S4) {Compliance Measurand\\Estimation};
+	\node[stage, right=of S4] (S5) {Rule Evaluation\\\& Alerting};
+	\node[stage, right=of S5] (S6) {Reporting\\\& Evidence Archiving};
+	
+	% Connection arrows
+	\draw[arrow] (S1.east) -- (S2.west);
+	\draw[arrow] (S2.east) -- (S3.west);
+	\draw[arrow] (S3.east) -- (S4.west);
+	\draw[arrow] (S4.east) -- (S5.west);
+	\draw[arrow] (S5.east) -- (S6.west);
+	
+	% Optional: Input/Output labels
+	\node[left=0.3cm of S1, font=\small\sffamily, align=right] {Input:\\Raw I/Q \\Samples};
+	\node[right=0.3cm of S6, font=\small\sffamily, align=left] {Output:\\Compliance Reports\\\& Evidence Logs};
+	
+\end{tikzpicture}
+\caption{Implemented SDR-based FM broadcast compliance monitoring pipeline.
+	Raw I/Q samples are processed through six stages, from wideband acquisition
+	and conditioning to reporting and evidence archiving, to enable automated
+	regulatory assessment.}

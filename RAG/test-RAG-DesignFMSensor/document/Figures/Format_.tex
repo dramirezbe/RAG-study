@@ -1,0 +1,86 @@
+% --- Page Layout ---
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{lineno} 
+
+% --- Math & Tables ---
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs, tabularx, threeparttable, array} 
+\usepackage{rotating}
+\usepackage{enumitem}
+
+% --- Colors (Defined BEFORE usage) ---
+\usepackage{xcolor}
+\definecolor{light-gray}{gray}{0.96}
+\definecolor{light-red}{rgb}{0.82, 0.1, 0.26}
+\definecolor{light-smoke}{rgb}{0.96, 0.96, 0.93} 
+\definecolor{light-olive}{rgb}{0.63, 0.57, 0.33}
+\definecolor{light-azul}{rgb}{0.25, 0.41, 0.88}
+
+% --- Custom Commands (Now safe to use defined colors) ---
+\newcommand{\gc}[1]{\textcolor{light-red}{#1}}
+\newcommand{\blue}[1]{\textcolor[rgb]{0.00,0.00,1.00}{#1}}
+
+% --- Boxes & Graphics ---
+\usepackage[most]{tcolorbox}
+\newtcolorbox{verticalrulelist}[1][]{
+	enhanced,
+	colback=light-red!12, % Background color (12% intensity)
+	colframe=light-red!90!black,
+	boxrule=0pt,
+	leftrule=2pt,
+	left=1em,
+	top=0.5em,
+	bottom=0.5em,
+	sharp corners,
+	#1
+}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning,calc,shadows,backgrounds}
+\newcommand{\xmark}{%
+	\tikz[scale=0.23] {
+		\draw[line width=0.7,line cap=round] (0,0) to [bend left=6] (1,1);
+		\draw[line width=0.7,line cap=round] (0.2,0.95) to [bend right=3] (0.8,0.05);
+}}
+\newcommand{\cmark}{%
+	\tikz[scale=0.23] {
+		\draw[line width=0.7,line cap=round] (0.25,0) to [bend left=10] (1,1);
+		\draw[line width=0.8,line cap=round] (0,0.35) to [bend right=1] (0.23,0);
+}}
+
+% --- Code Listings ---
+\usepackage{listings} % Explicitly loaded
+\usepackage{pythonhighlight} % Note: Can conflict with manual listings config
+
+\lstdefinestyle{pycode}{
+	language = Python,
+	basicstyle = \ttfamily\small,
+	keywordstyle = \color{light-azul}\bfseries,
+	commentstyle = \color{light-gray}\itshape,
+	stringstyle = \color{light-olive},
+	showstringspaces= false,
+	breaklines = true,
+	frame = single,
+	framerule = 0.4pt,
+	numbers = left,
+	numberstyle = \tiny\color{codegray},
+	numbersep = 6pt,
+	xleftmargin = 1.5em,
+	xrightmargin = 0.5em,
+	tabsize = 4,
+	captionpos = b,
+}
+
+% --- Plots & References ---
+\usepackage{pgfplots}
+\usepackage{cite}
+
+% --- Hyperref (Loaded Last for Compatibility) ---
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=light-red,
+	filecolor=magenta, 
+	urlcolor=light-azul,
+}

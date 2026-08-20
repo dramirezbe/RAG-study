@@ -1,0 +1,78 @@
+\begin{sidewaystable}[p]
+	\centering
+	\footnotesize
+	\setlength{\tabcolsep}{5pt}
+	\renewcommand{\arraystretch}{1.25}
+	\begin{tabular}{p{2.1cm} p{0.9cm} p{4.2cm} p{1.2cm} p{3.9cm} p{3.3cm} p{1.8cm} p{3.9cm}}
+		\hline
+		\textbf{Measurand} & \textbf{Symbol} & \textbf{Definition} & \textbf{Units} & \textbf{Estimation method} & \textbf{Calibration dependency} & \textbf{Reporting interval} & \textbf{Compliance reference} \\
+		\hline
+		
+		Carrier frequency error
+		& $\Delta f_c$
+		& Difference between the estimated channel center frequency and the assigned frequency of the monitored FM station.
+		& Hz
+		& Spectral peak, centroid, or model-based estimation referenced to the node frequency standard.
+		& High; depends on frequency-reference accuracy, offset calibration, and drift compensation ($^{*}$).
+		& Periodic and event-triggered
+		& Assigned-frequency tolerance specified by the applicable regulator or station license. \\
+		
+		Calibrated received power
+		& $P_{\mathrm{rx}}(B)$
+		& Power measured at a defined receiver reference plane over a stated bandwidth $B$ after gain-state and frequency-response correction.
+		& dBm or dB$\mu$V
+		& PSD estimation followed by integration over the defined analysis bandwidth after receiver calibration.
+		& High; requires gain calibration, front-end response correction, and a documented reference plane.
+		& Periodic
+		& Site- or policy-specific threshold; suitable for compliance use only when the reference plane is defined. \\
+		
+		Field strength
+		& $E$
+		& Electric field strength at the monitoring antenna location, inferred from the calibrated receive chain and antenna factor.
+		& dB$\mu$V/m
+		& Conversion from calibrated received level using antenna factor, cable loss, and front-end corrections.
+		& Very high; valid only when antenna factor and end-to-end chain calibration are available.
+		& Periodic
+		& Applicable field-strength rule, coordination criterion, or service-limit criterion adopted by the jurisdiction. \\
+		
+		Occupied bandwidth
+		& $B_{\mathrm{occ}}$
+		& Width of the frequency band containing a specified percentage of the total integrated mean emission power.
+		& kHz
+		& Direct $\beta\%$ occupied-bandwidth measurement on the recorded spectrum.
+		& Moderate; depends on frequency-response flatness, RBW/FFT configuration, and interference control within the analysis span.
+		& Periodic
+		& Occupied-bandwidth or spectral-containment rule defined by the governing standard or license condition. \\
+		
+		Adjacent-channel / out-of-band emission level
+		& $L_{\mathrm{adj}}$, $L_{\mathrm{OOB}}$
+		& Emission level measured in adjacent-channel or out-of-band regions, reported either relative to the in-band reference level or at the calibrated receiver reference plane.
+		& dBc or dBm
+		& Spectral integration or peak-envelope evaluation in predefined offset bands relative to the assigned carrier.
+		& High; requires dynamic-range validation, front-end linearity, and spectral calibration.
+		& Periodic and event-triggered
+		& Emission-mask or attenuation rule adopted by the regulator, evaluated for the stated offset region and reference level. \\
+		
+		Peak deviation / multiplex-related indicator
+		& $\Delta f_{\max}$, $P_{\mathrm{MPX}}$
+		& Maximum instantaneous frequency deviation and, where required, a multiplex-related modulation quantity derived from the FM baseband or demodulated composite signal.
+		& kHz, dBr, or other adopted MPX metric
+		& FM demodulation followed by deviation estimation and multiplex-power measurement using the adopted method.
+		& High; depends on demodulator linearity, deviation calibration, and composite-baseband conditioning.
+		& Windowed estimate with periodic summary
+		& Applicable deviation or multiplex-power rule under the adopted monitoring procedure. \\
+		
+		Channel occupancy over time
+		& $O_T$
+		& Fraction of the observation interval during which the channel is declared occupied according to a documented detection rule.
+		& \%
+		& Threshold-, energy-, or feature-based detection over repeated observation windows with a defined revisit strategy.
+		& Moderate; depends on threshold calibration, noise-floor estimation, and decision logic.
+		& Rolling summary
+		& Occupancy definition and decision rule established by the monitoring policy. \\
+		
+		\hline
+	\end{tabular}
+	\caption{Operational definition of principal FM compliance measurands. Here, $\beta\%$ occupied bandwidth denotes the minimum frequency interval containing $\beta\%$ of the total integrated mean emission power.}
+	\label{tab:fm_measurands_operational}
+\end{sidewaystable}
