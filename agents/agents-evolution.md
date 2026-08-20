@@ -1,110 +1,110 @@
-# Evolución de Arquitecturas Agentivas
+# Evolution of Agentic Architectures
 
-## AGENTS.md: el monolito contextual
+## AGENTS.md: the contextual monolith
 
-Todo empezó con `AGENTS.md`: un archivo markdown gigante con TODAS las reglas del proyecto — estilo, patrones, anti-patrones, convenciones, workflows. El agente lo leía al inicio y "sabía" cómo trabajar.
+It all started with `AGENTS.md`: a giant markdown file with ALL of the project's rules — style, patterns, anti-patterns, conventions, workflows. The agent read it at startup and "knew" how to work.
 
-**Características:**
+**Characteristics:**
 
-- **Carga única al inicio de sesión:** El agente consume el archivo completo como parte del prompt de sistema o primer mensaje.
-- **Simplicidad conceptual:** Un solo punto de configuración. Fácil de entender, fácil de versionar.
-- **Contenido típico:** Estilo de código, estructura de proyecto, comandos de build, reglas de linting, convenciones de naming, frameworks usados, gotchas del repo.
+- **Single load at session start:** The agent consumes the whole file as part of the system prompt or first message.
+- **Conceptual simplicity:** A single configuration point. Easy to understand, easy to version.
+- **Typical content:** Code style, project structure, build commands, linting rules, naming conventions, frameworks used, repo gotchas.
 
-**Problema:** Cada nueva convención engordaba el archivo. En proyectos reales, `AGENTS.md` puede llegar a miles de líneas. Se come la ventana de contexto antes de que escribas tu primer prompt. El agente arranca con el tanque de contexto medio vacío y lo paga en cada turno de la conversación.
-
----
-
-## AGENTS.md crece infinito
-
-El problema de fondo no es el archivo en sí, sino la premisa de *precarga total de contexto*: leer TODO por si acaso se necesita ALGO.
-
-**Síntomas del monolito descontrolado:**
-
-- **Bloat contextual:** 2000+ líneas de reglas donde quizás solo 50 son relevantes para tu tarea. Tokens desperdiciados en cada request.
-- **Fricción de mantenimiento:** El equipo evita documentar nuevas convenciones porque "ya está muy largo". El archivo se estanca, la brecha entre lo documentado y lo real crece.
-- **Ambigüedad por saturación:** Demasiada información difusa compite por la atención del modelo. Reglas contradictorias entre secciones escritas con meses de diferencia.
-- **Costo acumulativo:** En modelos con pricing por token (GPT-4, Claude), cada turno paga por re-leer el monolito completo.
+**Problem:** Every new convention fattened the file. In real projects, `AGENTS.md` can reach thousands of lines. It eats the context window before you write your first prompt. The agent starts with the context tank half empty and pays for it on every turn of the conversation.
 
 ---
 
-## Primera evolución: Skills
+## AGENTS.md grows infinitely
 
-En vez de un archivo gigante, un *router* liviano (`AGENTS.md`) que apunta a `SKILL.md` específicos según la tarea. Solo se carga el contexto que necesitas para la tarea actual. Contexto dinámico bajo demanda.
+The underlying problem is not the file itself, but the premise of *total context preloading*: reading EVERYTHING just in case SOME THING is needed.
 
-**Cómo funciona:**
+**Symptoms of the uncontrolled monolith:**
 
-- **AGENTS.md se convierte en un índice:** Contiene únicamente una tabla de skills disponibles con su descripción y ubicación. El agente lo lee al inicio (costo mínimo) y decide cuál cargar según la tarea del usuario.
-- **Cada skill es un `SKILL.md` autónomo:** Un archivo por dominio con instrucciones precisas, ejemplos, workflows y referencias. Carga *on-demand*: solo cuando el agente detecta que la tarea coincide.
-- **Estructura típica de skills:**
-  - `git/SKILL.md` — Flujo de commits, branches, PRs, convenciones de mensajes.
-  - `testing/SKILL.md` — Frameworks, comandos, cobertura mínima, mocks permitidos.
-  - `db/SKILL.md` — Migraciones, ORM, naming de tablas, reglas de índice.
-  - `deploy/SKILL.md` — CI/CD, entornos, variables, health checks.
-
-**Ventajas:**
-
-- **Contexto preciso:** El agente solo paga tokens por lo que va a usar. Si vas a escribir tests, no cargas reglas de deploy.
-- **Mantenibilidad:** Cada skill tiene un dueño claro. Agregar una nueva no toca las demás.
-- **Escalabilidad horizontal:** El número de skills puede crecer sin degradar la eficiencia contextual.
-
-**Limitación:** Skills resuelve QUÉ contexto cargar, pero no el ruido acumulado en la conversación. Un solo agente manejando múltiples skills en una sesión larga sigue acumulando tokens de historial.
+- **Contextual bloat:** 2000+ lines of rules where maybe only 50 are relevant to your task. Tokens wasted on every request.
+- **Maintenance friction:** The team avoids documenting new conventions because "it's already too long." The file stagnates, and the gap between what is documented and what is real grows.
+- **Ambiguity from saturation:** Too much diffuse information competes for the model's attention. Contradictory rules between sections written months apart.
+- **Cumulative cost:** On token-priced models (GPT-4, Claude), every turn pays for re-reading the whole monolith.
 
 ---
 
-## Segunda evolución: Sub-agentes
+## First evolution: Skills
 
-Skills resuelve *qué* contexto cargar. Pero un solo agente sigue acumulando ruido. La solución: delegar cada fase a un sub-agente efímero con contexto fresco. Nace, ejecuta, reporta y muere.
+Instead of a giant file, a lightweight *router* (`AGENTS.md`) that points to specific `SKILL.md` files depending on the task. Only the context you need for the current task is loaded. Dynamic context on demand.
 
-**Cómo funciona:**
+**How it works:**
 
-- **Orquestador + workers:** Un agente principal (orquestador) recibe la tarea del usuario, la descompone en sub-tareas, y lanza sub-agentes independientes para cada una.
-- **Sub-agente efímero:** Cada sub-agente recibe un contexto limpio (instrucciones de la sub-tarea + skill relevante), ejecuta su trabajo, y devuelve un resumen al orquestador. Luego desaparece — no acumula historial.
-- **Paralelismo real:** Sub-agentes independientes pueden ejecutarse en paralelo (ej. uno investiga la documentación mientras otro busca patrones en el código).
+- **AGENTS.md becomes an index:** It only contains a table of available skills with their description and location. The agent reads it at startup (minimal cost) and decides which one to load based on the user's task.
+- **Each skill is a self-contained `SKILL.md`:** One file per domain with precise instructions, examples, workflows, and references. Loaded *on-demand*: only when the agent detects the task matches.
+- **Typical skill structure:**
+  - `git/SKILL.md` — Commit flow, branches, PRs, message conventions.
+  - `testing/SKILL.md` — Frameworks, commands, minimum coverage, allowed mocks.
+  - `db/SKILL.md` — Migrations, ORM, table naming, index rules.
+  - `deploy/SKILL.md` — CI/CD, environments, variables, health checks.
 
-**Comparación con el modelo monolítico:**
+**Advantages:**
 
-| Aspecto | Agente único | Sub-agentes |
+- **Precise context:** The agent only pays tokens for what it will use. If you're going to write tests, you don't load deploy rules.
+- **Maintainability:** Each skill has a clear owner. Adding a new one doesn't touch the others.
+- **Horizontal scalability:** The number of skills can grow without degrading contextual efficiency.
+
+**Limitation:** Skills solve WHICH context to load, but not the accumulated noise in the conversation. A single agent handling multiple skills in a long session still accumulates history tokens.
+
+---
+
+## Second evolution: Sub-agents
+
+Skills solve *what* context to load. But a single agent still accumulates noise. The solution: delegate each phase to an ephemeral sub-agent with fresh context. Born, executes, reports, and dies.
+
+**How it works:**
+
+- **Orchestrator + workers:** A main agent (orchestrator) receives the user's task, breaks it into sub-tasks, and launches independent sub-agents for each one.
+- **Ephemeral sub-agent:** Each sub-agent receives clean context (sub-task instructions + relevant skill), executes its work, and returns a summary to the orchestrator. Then it disappears — it does not accumulate history.
+- **Real parallelism:** Independent sub-agents can run in parallel (e.g., one researches the documentation while another looks for patterns in the code).
+
+**Comparison with the monolithic model:**
+
+| Aspect | Single agent | Sub-agents |
 |---|---|---|
-| **Contexto acumulado** | Crece lineal con cada acción | Cada sub-agente arranca fresco |
-| **Paralelismo** | Secuencial | Tareas independientes en paralelo |
-| **Especialización** | Un agente sabe de todo | Cada sub-agente recibe skill específica |
-| **Ruido** | Decisiones previas contaminan | Aislado, no ve decisiones de otros |
-| **Costo** | Tokens crecientes por turno | Tokens fijos por sub-tarea |
+| **Accumulated context** | Grows linearly with each action | Each sub-agent starts fresh |
+| **Parallelism** | Sequential | Independent tasks in parallel |
+| **Specialization** | One agent knows everything | Each sub-agent gets a specific skill |
+| **Noise** | Previous decisions contaminate | Isolated, does not see others' decisions |
+| **Cost** | Growing tokens per turn | Fixed tokens per sub-task |
 
-**Limitación:** Los sub-agentes no comparten estado. Si dos sub-agentes necesitan la misma información base, la cargan dos veces. Y el orquestador debe ser lo suficientemente inteligente para descomponer y consolidar correctamente.
+**Limitation:** Sub-agents do not share state. If two sub-agents need the same base information, they load it twice. And the orchestrator must be smart enough to decompose and consolidate correctly.
 
 ---
 
-## El patrón actual: todo junto
+## The current pattern: everything together
 
-La arquitectura que resuelve las limitaciones del LLM con ingeniería, combinando los cuatro elementos:
+The architecture that solves LLM limitations with engineering, combining the four elements:
 
 ```
-Orquestador (coordina)
-    ├── Skills (contexto preciso bajo demanda)
-    ├── Sub-agentes (ejecución limpia y efímera)
-    └── Memoria persistente (continuidad entre sesiones)
+Orchestrator (coordinates)
+    ├── Skills (precise context on demand)
+    ├── Sub-agents (clean and ephemeral execution)
+    └── Persistent memory (continuity across sessions)
 ```
 
-**Componentes del stack actual:**
+**Components of the current stack:**
 
-### 1. Orquestador
-El agente principal que recibe la tarea del usuario, la descompone, decide qué skills y sub-agentes lanzar, y consolida los resultados. Es el *cerebro coordinador*. No ejecuta tareas pesadas directamente — delega.
+### 1. Orchestrator
+The main agent that receives the user's task, breaks it down, decides which skills and sub-agents to launch, and consolidates the results. It is the *coordinating brain*. It does not execute heavy tasks directly — it delegates.
 
-### 2. Skills (contexto preciso)
-El router ligero (`AGENTS.md` como índice) + `SKILL.md` bajo demanda. Resuelve el problema de "qué necesita saber el agente para esta tarea específica". El contexto se carga solo cuando el orquestador o un sub-agente lo solicita.
+### 2. Skills (precise context)
+The lightweight router (`AGENTS.md` as index) + on-demand `SKILL.md`. Solves the problem of "what the agent needs to know for this specific task." Context is loaded only when the orchestrator or a sub-agent requests it.
 
-### 3. Sub-agentes (ejecución limpia)
-Workers efímeros que nacen con contexto fresco (instrucciones + skill), ejecutan una sub-tarea concreta, reportan al orquestador, y mueren. No acumulan ruido de conversaciones previas. Pueden ejecutarse en paralelo.
+### 3. Sub-agents (clean execution)
+Ephemeral workers born with fresh context (instructions + skill), execute a concrete sub-task, report to the orchestrator, and die. They do not accumulate noise from previous conversations. They can run in parallel.
 
-### 4. Memoria persistente (continuidad)
-Archivos de estado, bases de conocimiento o *memory banks* que sobreviven a la sesión del agente. Permiten que el orquestador y los sub-agentes recuerden decisiones previas, aprendan del feedback, y mantengan coherencia entre sesiones sin recargar todo el historial.
+### 4. Persistent memory (continuity)
+State files, knowledge bases, or memory banks that survive the agent's session. They allow the orchestrator and sub-agents to remember previous decisions, learn from feedback, and maintain coherence across sessions without reloading the entire history.
 
-**Por qué funciona:**
+**Why it works:**
 
-- **Rompe la ventana de contexto:** Skills cargan solo lo necesario. Sub-agentes no acumulan historial. Memoria guarda lo importante fuera del prompt.
-- **Escala con el proyecto:** Más reglas = más skills, no más tokens por turno. Más complejidad = más sub-agentes, no más ruido.
-- **Paralelismo real:** Tareas independientes se ejecutan simultáneamente en lugar de secuencialmente.
-- **Costo predecible:** Tokens por tarea en lugar de tokens crecientes por sesión.
+- **Breaks the context window:** Skills load only what is needed. Sub-agents do not accumulate history. Memory stores what matters outside the prompt.
+- **Scales with the project:** More rules = more skills, not more tokens per turn. More complexity = more sub-agents, not more noise.
+- **Real parallelism:** Independent tasks run simultaneously instead of sequentially.
+- **Predictable cost:** Tokens per task instead of growing tokens per session.
 
-**El principio fundamental:** No intentes que un solo LLM lo sepa todo y lo recuerde todo. En su lugar, dale la herramienta correcta (skill), el foco correcto (sub-agente), y la memoria correcta (persistencia) para cada momento. La inteligencia no está en el modelo — está en la arquitectura que lo rodea.
+**The fundamental principle:** Do not try to make a single LLM know everything and remember everything. Instead, give it the right tool (skill), the right focus (sub-agent), and the right memory (persistence) for each moment. The intelligence is not in the model — it is in the architecture that surrounds it.

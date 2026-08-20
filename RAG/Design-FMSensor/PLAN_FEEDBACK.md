@@ -139,10 +139,10 @@ For each section: **Read** (current lines), **Queries** (record query strings + 
 **Queries**
 - (LAP1) `software defined radio definition SDR ITU-R SM.2152 reconfigurable` — re-verify the SM.2152 list item added at L99–100.
 - (LAP1) `0 dBr reference level complete multiplex signal power pilot 19 kHz` (scope BS.450) — re-verify the BS.450-4 list item (E16).
-- (LAP2) `ANE resolución 105 plan nacional de frecuencias FM Colombia` (scope ANE_0105_2020) — re-verify the "(Colombia)" edit at L98.
+- (LAP2) `ANE resolution 105 national FM frequency plan Colombia` (scope ANE_0105_2020) — re-verify the "(Colombia)" edit at L98.
 
 **Hunt**
-- GAP: ANE Resolución 0463 was used as a source in LAP1 Sections 3 and 7 (see LAP1 roll-up: `ANE_0463_2020@284`) but was **not** added to the regulatory-context list in LAP1 (only BS.450-4 and SM.2152 were). Verify whether the list still omits a standard the document actively cites later.
+- GAP: ANE Resolution 463 was used as a source in LAP1 Sections 3 and 7 (see LAP1 roll-up: `ANE_0463_2020@284`) but was **not** added to the regulatory-context list in LAP1 (only BS.450-4 and SM.2152 were). Verify whether the list still omits a standard the document actively cites later.
 - WEAK-UNSUPPORTED: any regulatory claim in the intro without a citation anchor.
 
 **LAP1 edits to re-verify**: L98 "(Colombia)"; L99–100 BS.450-4 item; L101 SM.2152 item.
@@ -177,7 +177,7 @@ For each section: **Read** (current lines), **Queries** (record query strings + 
 
 **Queries**
 - (LAP1) `73.310 FM technical definitions authorized bandwidth` + neighbors of `47_CFR_Part_73@703` — re-verify L141 band wording.
-- (LAP1) `separación entre canales portadoras FM 100 kHz 200 kHz banda 88 108` — re-verify L143 raster clause.
+- (LAP1) `separation between FM carrier channels 100 kHz 200 kHz band 88 108` — re-verify L143 raster clause.
 
 **Hunt**
 - REDUNDANCY: the jurisdiction-aware raster clause (L143, "100 kHz ANE / 200 kHz FCC") is now repeated in Section 7 L670 — flag as a duplication candidate (TRIM only with approval).
@@ -195,8 +195,8 @@ For each section: **Read** (current lines), **Queries** (record query strings + 
 
 **Queries**
 - (LAP1) `carrier frequency tolerance FM broadcast FCC ±2000 Hz station` — re-verify L233 tiers (±2 kHz ANE / ±3 kHz FCC ≤10 W).
-- (LAP2) `ocupación de banda 256 kHz estéreo plan técnico FM ANE` (scope ANE_0105_2020) — re-verify Table 1 occupied-BW row (ANE 256 kHz, PDF-only finding 5.1.5).
-- (LAP2) `relación de protección co-canal 37 dB ±100 kHz 25 dB FM` (scope ANE_0105_2020) — re-verify Table 1 ACLR row vs Section 7 L695 (LAP1 corrected E9: ±100 kHz = 25 dB, not 37 dB).
+- (LAP2) `band occupancy 256 kHz stereo FM technical plan ANE` (scope ANE_0105_2020) — re-verify Table 1 occupied-BW row (ANE 256 kHz, PDF-only finding 5.1.5).
+- (LAP2) `co-channel protection ratio 37 dB ±100 kHz 25 dB FM` (scope ANE_0105_2020) — re-verify Table 1 ACLR row vs Section 7 L695 (LAP1 corrected E9: ±100 kHz = 25 dB, not 37 dB).
 - (LAP1) `0 dBr reference level complete multiplex signal power pilot 19 kHz` (scope BS.412) — re-verify Table 1 MPX row (60 s criterion).
 
 **Hunt**
@@ -251,7 +251,7 @@ For each section: **Read** (current lines), **Queries** (record query strings + 
 
 **Queries**
 - (LAP1) `occupied bandwidth 99 percent of total mean emission power FM` + neighbors of `47_CFR_Part_73@817` — re-verify L518 stepped-mask summary (25/35 dB steps, 43+10log₁₀P vs 80 dB).
-- (LAP2) `emisiones no esenciales 35 dB 240 600 kHz protección aeronáutica` (scope ANE_0105_2020) — re-verify the ANE mask half of L518.
+- (LAP2) `non-essential emissions 35 dB 240 600 kHz aeronautical protection` (scope ANE_0105_2020) — re-verify the ANE mask half of L518.
 - (LAP1) `carrier frequency tolerance…` bonus hit — re-verify Table 3 ±20 ppm → ±2 kHz note at L645.
 
 **Hunt**
@@ -273,7 +273,7 @@ For each section: **Read** (current lines), **Queries** (record query strings + 
 - (LAP1) `carrier frequency tolerance FM broadcast FCC ±2000 Hz station` — re-verify L660 tiers.
 - (LAP2, R10) `measurement receiver IF bandwidth 400 kHz peak deviation FM demodulation` (scope BS.412, all docs) — **re-run the LAP1 negative finding** now that the index may have grown; if still negative, confirm the de-attribution at L702 stands.
 - (LAP1) `0 dBr reference level complete multiplex signal power pilot 19 kHz…` — re-verify the L703 "adopted procedure definition" label vs BS.412 §2.5.1.
-- (LAP2) `relación de protección ±100 kHz 25 dB ±200 kHz 7 dB ANE` — re-verify L695 protection-ratio clause.
+- (LAP2) `protection ratio ±100 kHz 25 dB ±200 kHz 7 dB ANE` — re-verify L695 protection-ratio clause.
 
 **Hunt**
 - REDUNDANCY: L660 tolerance vs Section 3 L233 + Table 1 (the triple-statement finding); L670 raster vs Section 2 L143; L695 protection ratios vs Table 1 ACLR row — consolidate only with approval.

@@ -27,7 +27,7 @@ Use `doc_name` ONLY as contextual input to determine:
 Constraint: Focus primarily on official and authoritative sources, especially:
 
 - Agencia Nacional del Espectro (ANE), Colombia.
-- Ministerio de Tecnologías de la Información y las Comunicaciones (MinTIC), Colombia.
+- Ministry of Information and Communication Technologies (MinTIC), Colombia.
 - ITU / ITU-R recommendations and reports.
 - Other Colombian government or officially recognized regulatory sources when directly applicable.
 

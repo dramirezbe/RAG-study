@@ -46,7 +46,7 @@ Full flag reference: `latexmk --help | head -80`
 
 | Area | Coverage |
 |------|----------|
-| Regulatory basis | FCC Part 73, ANE Resolución 105, ITU-R BS.412, BS.450-4, SM.2152, ISO/IEC 17025 |
+| Regulatory basis | FCC Part 73, ANE Resolution 105, ITU-R BS.412, BS.450-4, SM.2152, ISO/IEC 17025 |
 | Target platform | Vendor-agnostic SDR device (8-bit ADC baseline, 87.5–108 MHz VHF-II observation; 88–108 MHz regulated FM band) |
 | DSP pipeline | 6 stages: Acquisition → Preprocessing → Spectral Estimation → Channel Detection → Carrier Estimation → Confidence Scoring |
 | Compliance measurands | Frequency error, received power, field strength, occupied bandwidth, ACLR, peak deviation, channel occupancy |
@@ -140,9 +140,9 @@ Local reading copies only — the searchable RAG index lives at `/home/javastral
 | File | Chunks | Description |
 |------|--------|-------------|
 | `47_CFR_Part_73.pdf` | 2611 | FCC Part 73 technical standards |
-| `ANE_0105_2020.pdf` | 3066 | ANE Resolución 105 (2020) |
-| `ANE_0406_2026.pdf` | 157 | ANE Resolución 0406 (2026) |
-| `ANE_0463_2020.pdf` | 924 | ANE Resolución 463 (2020) |
+| `ANE_0105_2020.pdf` | 3066 | ANE Resolution 105 (2020) |
+| `ANE_0406_2026.pdf` | 157 | ANE Resolution 0406 (2026) |
+| `ANE_0463_2020.pdf` | 924 | ANE Resolution 463 (2020) |
 | `BS.412-9.pdf` | 97 | ITU-R BS.412 FM broadcasting |
 | `BS.450-4.pdf` | 14 | ITU-R BS.450 transmission standards |
 | `ISO_IEC_17025_2017.pdf` | 185 | ISO/IEC 17025 laboratory competence |

@@ -1,45 +1,45 @@
-# Benchmarks para Evaluación de LLMs
+# Benchmarks for LLM Evaluation
 
 ## GPQA (Graduate-Level Google-Proof Q&A)
 
-**Referencia:** Rein et al. (2023). *GPQA: A Graduate-Level Google-Proof Q&A Benchmark.* [arXiv:2311.12022](https://arxiv.org/abs/2311.12022).
+**Reference:** Rein et al. (2023). *GPQA: A Graduate-Level Google-Proof Q&A Benchmark.* [arXiv:2311.12022](https://arxiv.org/abs/2311.12022).
 
-**Descripción:** Conjunto de datos de 448 preguntas de opción múltiple escritas por expertos de dominio en biología, física y química. Las preguntas son de alta calidad y extremadamente difíciles: están diseñadas para ser "a prueba de Google" (*Google-proof*), es decir, no pueden resolverse fácilmente mediante búsquedas en internet.
+**Description:** Dataset of 448 multiple-choice questions written by domain experts in biology, physics, and chemistry. The questions are high quality and extremely difficult: they are designed to be "Google-proof," that is, they cannot be easily solved through internet searches.
 
-**Características principales:**
+**Main characteristics:**
 
-- **Tamaño:** 448 preguntas de opción múltiple.
-- **Dominios:** Biología, física y química.
-- **Nivel objetivo:** Nivel de posgrado (PhD).
-- **Dificultad para humanos:** Expertos con doctorado o en proceso de obtenerlo alcanzan un 65% de precisión (74% descartando errores identificados en retrospectiva). Validadores no expertos pero altamente calificados alcanzan solo un 34%, incluso con acceso irrestricto a la web durante más de 30 minutos en promedio.
-- **Dificultad para IA:** GPT-4 (línea base más fuerte del paper original) alcanzó solo un 39% de precisión.
+- **Size:** 448 multiple-choice questions.
+- **Domains:** Biology, physics, and chemistry.
+- **Target level:** Graduate level (PhD).
+- **Difficulty for humans:** Experts with a PhD or working toward one reach 65% accuracy (74% discounting errors identified in retrospect). Highly qualified non-expert validators reach only 34%, even with unrestricted web access for over 30 minutes on average.
+- **Difficulty for AI:** GPT-4 (the strongest baseline in the original paper) reached only 39% accuracy.
 
-**Propósito:** Evaluar la capacidad de los modelos de lenguaje para responder preguntas científicas de alto nivel que requieren razonamiento profundo, más allá de la recuperación de información factual. Sirve como plataforma para experimentos de supervisión escalable (*scalable oversight*), donde se busca que humanos supervisen sistemas de IA que potencialmente superan las capacidades humanas.
+**Purpose:** Evaluate the ability of language models to answer high-level scientific questions that require deep reasoning, beyond factual information retrieval. It serves as a platform for scalable oversight experiments, where humans supervise AI systems that potentially surpass human capabilities.
 
-**Cita (arXiv):** [arXiv:2311.12022](https://arxiv.org/abs/2311.12022)
+**Citation (arXiv):** [arXiv:2311.12022](https://arxiv.org/abs/2311.12022)
 
 ---
 
 ## SWE-bench (Software Engineering Benchmark)
 
-**Referencia:** Jimenez et al. (2023). *SWE-bench: Can Language Models Resolve Real-World GitHub Issues?* [arXiv:2310.06770](https://arxiv.org/abs/2310.06770). Aceptado en ICLR 2024.
+**Reference:** Jimenez et al. (2023). *SWE-bench: Can Language Models Resolve Real-World GitHub Issues?* [arXiv:2310.06770](https://arxiv.org/abs/2310.06770). Accepted at ICLR 2024.
 
-**Descripción:** Marco de evaluación compuesto por 2,294 problemas de ingeniería de software extraídos de *issues* reales de GitHub y sus correspondientes *pull requests*, provenientes de 12 repositorios populares de Python. Dada una base de código y la descripción de un *issue*, el modelo debe editar el código para resolverlo.
+**Description:** Evaluation framework comprising 2,294 software engineering problems extracted from real GitHub issues and their corresponding pull requests, from 12 popular Python repositories. Given a codebase and an issue description, the model must edit the code to resolve it.
 
-**Características principales:**
+**Main characteristics:**
 
-- **Tamaño:** 2,294 instancias en la versión completa.
-- **Variantes:**
-  - **SWE-bench Verified:** Subconjunto de 500 instancias con filtrado humano para eliminar ambigüedades.
-  - **SWE-bench Lite:** Subconjunto de 300 instancias curado para evaluación más económica.
-  - **SWE-bench Multilingual:** 300 tareas en 9 lenguajes de programación.
-  - **SWE-bench Multimodal:** 517 instancias que incluyen elementos visuales.
-- **Repositorios:** 12 repositorios populares de Python (Django, Flask, matplotlib, pandas, requests, scikit-learn, seaborn, sympy, etc.).
-- **Dificultad para IA:** Claude 2, el mejor modelo en el paper original, resolvió solo el 1.96% de las instancias. Modelos actuales alcanzan más del 65% en SWE-bench Verified (ej. mini-SWE-agent v2).
-- **Habilidades evaluadas:** Comprensión y coordinación de cambios a través de múltiples funciones, clases y archivos; interacción con entornos de ejecución; procesamiento de contextos extremadamente largos; razonamiento complejo más allá de la generación de código tradicional.
+- **Size:** 2,294 instances in the full version.
+- **Variants:**
+  - **SWE-bench Verified:** Subset of 500 instances with human filtering to remove ambiguities.
+  - **SWE-bench Lite:** Subset of 300 instances curated for more economical evaluation.
+  - **SWE-bench Multilingual:** 300 tasks in 9 programming languages.
+  - **SWE-bench Multimodal:** 517 instances that include visual elements.
+- **Repositories:** 12 popular Python repositories (Django, Flask, matplotlib, pandas, requests, scikit-learn, seaborn, sympy, etc.).
+- **Difficulty for AI:** Claude 2, the best model in the original paper, solved only 1.96% of the instances. Current models reach over 65% on SWE-bench Verified (e.g., mini-SWE-agent v2).
+- **Skills evaluated:** Understanding and coordinating changes across multiple functions, classes, and files; interacting with execution environments; processing extremely long contexts; complex reasoning beyond traditional code generation.
 
-**Propósito:** Proporcionar un banco de pruebas realista, sostenible y desafiante para evaluar modelos de lenguaje en tareas autónomas de ingeniería de software. Los avances en SWE-bench representan pasos hacia modelos más prácticos, inteligentes y autónomos.
+**Purpose:** Provide a realistic, sustainable, and challenging testbed for evaluating language models on autonomous software engineering tasks. Advances on SWE-bench represent steps toward more practical, intelligent, and autonomous models.
 
-**Sitio web y leaderboard:** [swebench.com](https://www.swebench.com)
+**Website and leaderboard:** [swebench.com](https://www.swebench.com)
 
-**Cita (arXiv):** [arXiv:2310.06770](https://arxiv.org/abs/2310.06770)
+**Citation (arXiv):** [arXiv:2310.06770](https://arxiv.org/abs/2310.06770)

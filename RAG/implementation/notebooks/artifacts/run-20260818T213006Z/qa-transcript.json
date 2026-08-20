@@ -1,7 +1,7 @@
 [
   {
-    "question": "¿Qué entidad expide la Resolución 463 de 2020?",
-    "answer": "Según el texto proporcionado, la entidad que expide la Resolución 463 de 2020 es la Agencia Nacional del Espectro (ANE).",
+    "question": "Which entity issues Resolution 463 of 2020?",
+    "answer": "According to the provided text, the entity that issues Resolution 463 of 2020 is the National Spectrum Agency (ANE).",
     "sources": [
       "ANE_0463_2020.pdf",
       "ANE_0406_2026.pdf",
@@ -11,8 +11,8 @@
     "elapsed_s": 0.7
   },
   {
-    "question": "¿Qué modifica la Resolución 406 de 2026?",
-    "answer": "La Resolución 406 de 2026 modifica el Anexo 2 Plan Técnico Nacional de Radiodifusión Sonora en Frecuencia Modulada (F. M.) y Anexo 3 Plan Técnico Nacional de Radiodifusión Sonora en Amplitud Modulada (A. M.) de la Resolución ANE 105 de 2020. [1]\n\nNot found in the provided documents.",
+    "question": "What does Resolution 406 of 2026 modify?",
+    "answer": "Resolution 406 of 2026 modifies Annex 2 National Technical Plan for FM Sound Broadcasting (F. M.) and Annex 3 National Technical Plan for AM Sound Broadcasting (A. M.) of Resolution ANE 105 of 2020. [1]\n\nNot found in the provided documents.",
     "sources": [
       "ANE_0406_2026.pdf",
       "ANE_0406_2026.pdf",
@@ -22,8 +22,8 @@
     "elapsed_s": 1.3
   },
   {
-    "question": "¿Qué se adiciona con la Resolución 463 de 2020?",
-    "answer": "Según el texto proporcionado, se adiciona el Capítulo 2 al Título 2 y el Anexo 2 a la Resolución 105 de 2020 para adoptar y modificar el Plan Técnico Nacional de Radiodifusión Sonora en Frecuencia Modulada (F. M.) [Source: ANE_0406_2026.pdf].\n\nNot found in the provided documents.",
+    "question": "What is added by Resolution 463 of 2020?",
+    "answer": "According to the provided text, Chapter 2 is added to Title 2 and Annex 2 to Resolution 105 of 2020 to adopt and modify the National Technical Plan for FM Sound Broadcasting (F. M.) [Source: ANE_0406_2026.pdf].\n\nNot found in the provided documents.",
     "sources": [
       "ANE_0406_2026.pdf",
       "ANE_0463_2020.pdf",

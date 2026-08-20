@@ -81,11 +81,11 @@ If the corpus cannot settle a claim (e.g., the ANE FM plan's carrier-tolerance v
 |-------|-------------|------------------------|
 | Carrier tolerance | `carrier frequency tolerance FM broadcast FCC ±2000 Hz station` | `47_CFR_Part_73@1670` (§73.1545), `47_CFR_Part_73@1668` (§73.1540) |
 | Occupied BW / mask | `occupied bandwidth 99 percent of total mean emission power FM` + neighbors of `47_CFR_Part_73@817` | `47_CFR_Part_73@818` (§73.317(b)–(e)) |
-| ANE mask | `emisiones no esenciales 25 dB entre 120 kHz 240 kHz…` + neighbors of `ANE_0105_2020@1158` | `ANE_0105_2020@1155–1162` |
-| ANE channel plan | `separación entre canales portadoras FM 100 kHz 200 kHz banda 88 108` | `ANE_0105_2020@1501, 1801, 1051` |
+| ANE mask | `non-essential emissions 25 dB between 120 kHz 240 kHz…` + neighbors of `ANE_0105_2020@1158` | `ANE_0105_2020@1155–1162` |
+| ANE channel plan | `separation between FM carrier channels 100 kHz 200 kHz band 88 108` | `ANE_0105_2020@1501, 1801, 1051` |
 | ANE protection ratios | neighbors of `ANE_0105_2020@1859` | `ANE_0105_2020@1857–1862` |
 | ANE deviation/pilot | `frequency deviation maximum FM broadcast 75 kHz …` (scope ANE_0463) | `ANE_0463_2020@284` |
-| ANE tolerance (STL) | `tolerancia de frecuencia portadora estación FM clase…` + neighbors of `ANE_0105_2020@1176` | `ANE_0105_2020@1170–1178` (20 ppm is STL, NOT FM) |
+| ANE tolerance (STL) | `FM station carrier frequency tolerance class…` + neighbors of `ANE_0105_2020@1176` | `ANE_0105_2020@1170–1178` (20 ppm is STL, NOT FM) |
 | Field strength | `minimum usable field strength FM broadcasting rural urban large cities dBµV/m BS.412` | `BS.412-9@5` (Table 1), `47_CFR_Part_73@789` (§73.315), `47_CFR_Part_73@914` (§73.515) |
 | Protection ratios | `radio frequency protection ratio co-channel adjacent channel FM broadcasting dB BS.412` | `BS.412-9@10, 18, 21` |
 | MPX / deviation | `0 dBr reference level complete multiplex signal power pilot 19 kHz…` (scope BS.412), `multiplex signal power reference…` (scope BS.450) | `BS.412-9@26, 29, 90–96`; `BS.450-4@4, 7, 9, 11, 12, 13` |
@@ -97,7 +97,7 @@ If the corpus cannot settle a claim (e.g., the ANE FM plan's carrier-tolerance v
 | SDR definition | `software defined radio definition SDR ITU-R SM.2152 reconfigurable` | `SM.2152@21–23` |
 | FCC definitions | `73.310 FM technical definitions authorized bandwidth…` + neighbors of `47_CFR_Part_73@703` | `47_CFR_Part_73@701–706` |
 | FCC stereo | `carrier frequency tolerance…` (bonus hit) | `47_CFR_Part_73@829` (§73.322 pilot 8–10%) |
-| Negative findings | `tolerancia 2000 Hz tres mil variación frecuencia portadora…` (ANE, all docs) | No FM-specific tolerance formula in corpus |
+| Negative findings | `carrier frequency tolerance 2000 Hz three thousand variation…` (ANE, all docs) | No FM-specific tolerance formula in corpus |
 
 ---
 
@@ -143,8 +143,8 @@ For each section: **Issues** (with pre-refactor line numbers), **Evidence to app
 
 **Issues**
 - L87: "Regulatory bodies evaluating technical adequacy" — fine; no change.
-- L94–101 Regulatory Context list cites FCC Part 73, ANE Resolución 105, ITU-R BS.412, ISO/IEC 17025 — all present in corpus ✓, but the list omits BS.450-4 (signal model source, E16/E17) and SM.2152 (SDR definition, E23), both actively used later. **Decision for human at gate: add 1–2 list items or leave as-is (adding = expansion; alternative is to leave list and let Sections 3 and 7 carry the citations).**
-- L98: "ANE Resolución 105 (applicable jurisdiction)" — the document should state plainly that 105 is Colombian (ANR→ANE) or keep the generic phrasing; corpus title confirms it is the Colombian national plan (MINTIC compilation). Minor wording fix, no length change.
+- L94–101 Regulatory Context list cites FCC Part 73, ANE Resolution 105, ITU-R BS.412, ISO/IEC 17025 — all present in corpus ✓, but the list omits BS.450-4 (signal model source, E16/E17) and SM.2152 (SDR definition, E23), both actively used later. **Decision for human at gate: add 1–2 list items or leave as-is (adding = expansion; alternative is to leave list and let Sections 3 and 7 carry the citations).**
+- L98: "ANE Resolution 105 (applicable jurisdiction)" — the document should state plainly that 105 is Colombian (ANR→ANE) or keep the generic phrasing; corpus title confirms it is the Colombian national plan (MINTIC compilation). Minor wording fix, no length change.
 - L103 footnote (RFC 2119) — keep unchanged.
 
 **Evidence to apply**: E23 (SDR def), E16 (BS.450 signal model), E4 (FCC band).
@@ -195,7 +195,7 @@ For each section: **Issues** (with pre-refactor line numbers), **Evidence to app
 ### Section 3 — FM Compliance Measurands and Traceability Requirements (lines 224–359)
 
 **Issues** (this is the section with the most findings)
-- **L233 — HIGH SEVERITY**: "carrier frequency error: ±(0.5 + 2 × f × 10⁻⁵) kHz" — this formula has **no source in the corpus** (queries across all 8 documents found nothing; the only ANE tolerance text, 20 ppm, belongs to the STL, E11). **Correct in place** to the jurisdiction-cited values: FCC §73.1545 ±2000 Hz (>10 W) / ±3000 Hz (≤10 W) (E1), with a clause that the ANE FM plan sets no explicit FM carrier tolerance in the indexed text (verify once in `docs-RAG/ANE_0105_2020.pdf` Anexo 2 before finalizing). Present the replacement sentence at the HITL gate.
+- **L233 — HIGH SEVERITY**: "carrier frequency error: ±(0.5 + 2 × f × 10⁻⁵) kHz" — this formula has **no source in the corpus** (queries across all 8 documents found nothing; the only ANE tolerance text, 20 ppm, belongs to the STL, E11). **Correct in place** to the jurisdiction-cited values: FCC §73.1545 ±2000 Hz (>10 W) / ±3000 Hz (≤10 W) (E1), with a clause that the ANE FM plan sets no explicit FM carrier tolerance in the indexed text (verify once in `docs-RAG/ANE_0105_2020.pdf` Annex 2 before finalizing). Present the replacement sentence at the HITL gate.
 - L234: "±2.5 dB" power and L235: "±3.5 dB" field-strength — internal design targets, no corpus conflict. Keep; mark EXTERNAL.
 - L236: "occupied bandwidth and related spectral-containment indicators" — anchor to FCC §73.317(b) (deemed ≤240 kHz when mask met, E3) as the compliance reference in Table 1 row (L293–297).
 - L239: "channel occupancy" — no corpus source; keep generic (policy-defined detection rule). Already correct.
@@ -250,7 +250,7 @@ For each section: **Issues** (with pre-refactor line numbers), **Evidence to app
 
 **Issues**
 - **L518 — HIGH SEVERITY (arithmetic + citation)**: "8-bit ADC offers a theoretical dynamic range of only ≈48 dB (6.02 × 8 + 1.76 dB)". The parenthetical evaluates to 49.92 dB ≈ 50 dB, not ≈48 dB. Table 3 (L629) states 48.2 dB theoretical. **Fix in place**: make the two consistent — either quote the datasheet figure (48.2 dB) with the formula removed, or quote 6.02·8+1.76 = 49.92 dB. Human picks at the gate; corpus has no HackRF datasheet (record as EXTERNAL).
-- **L518 — HIGH SEVERITY (citation)**: "Regulatory standards (e.g., FCC Part 73, ANE Resolución 105) often mandate out-of-band emission attenuation exceeding 80 dB" — imprecise vs E3 (stepped mask: 25/35 dB steps, 80 dB only beyond 600 kHz and only as the lesser of 43+10logP and 80 dB) and vs E8 (ANE: 35 dB at 240–600 kHz; aeronautical-band protection beyond). **Fix in place**: replace "exceeding 80 dB" with a correct one-clause summary of the stepped masks, or cite the specific sections (§73.317(b)–(d); ANE Anexo 2 "Emisiones no esenciales") without listing all numbers.
+- **L518 — HIGH SEVERITY (citation)**: "Regulatory standards (e.g., FCC Part 73, ANE Resolution 105) often mandate out-of-band emission attenuation exceeding 80 dB" — imprecise vs E3 (stepped mask: 25/35 dB steps, 80 dB only beyond 600 kHz and only as the lesser of 43+10logP and 80 dB) and vs E8 (ANE: 35 dB at 240–600 kHz; aeronautical-band protection beyond). **Fix in place**: replace "exceeding 80 dB" with a correct one-clause summary of the stepped masks, or cite the specific sections (§73.317(b)–(d); ANE Annex 2 "Non-essential emissions") without listing all numbers.
 - L528 (I/Q imbalance): −40 dBc residual threshold is internal design; consistent across Sections 6 and 7 and Table 2 ✓. No change.
 - L530: Δ_det = 8 dB default ↔ Stage 4 (L830) ✓ consistent. No change.
 - L534: ±20 ppm XO claim and GPSDO requirement — EXTERNAL (datasheet not in index). Keep; mark EXTERNAL.

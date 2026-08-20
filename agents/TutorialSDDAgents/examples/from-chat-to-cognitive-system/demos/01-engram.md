@@ -1,74 +1,74 @@
-# Engram: Memoria persistente para agentes
+# Engram: Persistent memory for agents
 
-> Vas a experimentar cómo un agente de IA puede recordar decisiones entre sesiones usando Engram.
+> You are going to experience how an AI agent can remember decisions between sessions using Engram.
 
-## Prerequisitos
+## Prerequisites
 
-- Claude Code instalado y funcionando
-- Engram configurado (el protocolo en tu `CLAUDE.md`)
-- Un proyecto abierto en el que puedas tomar decisiones de arquitectura
+- Claude Code installed and working
+- Engram configured (the protocol in your `CLAUDE.md`)
+- An open project where you can make architecture decisions
 
-## Contexto
+## Context
 
-Los agentes de IA son **stateless por defecto**. Cada vez que abrís una sesión nueva, el agente arranca de cero: no sabe qué decidiste ayer, qué convenciones definiste, ni qué bugs resolviste. Es como trabajar con un dev que tiene amnesia todos los días. Engram resuelve esto agregando una capa de memoria persistente que sobrevive entre sesiones, sin que tengas que repetirte.
+AI agents are **stateless by default**. Every time you open a new session, the agent starts from zero: it doesn't know what you decided yesterday, what conventions you defined, or what bugs you fixed. It's like working with a dev who has amnesia every day. Engram solves this by adding a persistent memory layer that survives between sessions, without you having to repeat yourself.
 
-## Ejercicio
+## Exercise
 
-### Paso 1: Tomar una decisión arquitectónica
+### Step 1: Make an architecture decision
 
-Abrí Claude Code en tu proyecto y mandá este prompt:
-
-```prompt
-Quiero usar Clean Architecture con inyección de dependencias en este proyecto. Las capas van a ser: domain, application, infrastructure, presentation. Usemos un patrón de repositorio para el acceso a datos.
-```
-
-Fijate en el output que Claude hace un `mem_save` automáticamente. Nadie se lo pidió: el protocolo de Engram lo dispara solo cuando detecta una decisión de arquitectura.
-
-### Paso 2: Verificar que se guardó
+Open Claude Code in your project and send this prompt:
 
 ```prompt
-Qué decisiones de arquitectura tenemos registradas?
+I want to use Clean Architecture with dependency injection in this project. The layers will be: domain, application, infrastructure, presentation. Let's use a repository pattern for data access.
 ```
 
-Vas a ver que Claude hace un `mem_search` y recupera la decisión. Observá el `topic_key` que le asignó, algo como `architecture/clean-architecture`.
+Notice in the output that Claude does a `mem_save` automatically. Nobody asked it to: the Engram protocol triggers it on its own when it detects an architecture decision.
 
-### Paso 3: Cerrar la sesión correctamente
+### Step 2: Verify it was saved
 
 ```prompt
-Listo, cerramos sesión
+What architecture decisions do we have on record?
 ```
 
-Esperá a que Claude ejecute el `mem_session_summary` antes de salir. Recién cuando termine, usá `/exit`. Si hacés Ctrl+C directo, matás el proceso sin darle chance de guardar el resumen.
+You'll see Claude do a `mem_search` and retrieve the decision. Observe the `topic_key` it assigned, something like `architecture/clean-architecture`.
 
-### Paso 4: Abrir una nueva sesión
+### Step 3: Close the session properly
 
-Abrí Claude Code de nuevo en el mismo proyecto:
+```prompt
+OK, let's close the session
+```
+
+Wait for Claude to run the `mem_session_summary` before exiting. Only when it finishes, use `/exit`. If you hit Ctrl+C directly, you kill the process without giving it a chance to save the summary.
+
+### Step 4: Open a new session
+
+Open Claude Code again in the same project:
 
 ```bash
 claude
 ```
 
 ```prompt
-Qué arquitectura decidimos usar para este proyecto?
+What architecture did we decide to use for this project?
 ```
 
-Vas a ver que Claude hace `mem_context` + `mem_search` y recupera la decisión de Clean Architecture con las capas exactas. Sin Engram, esto se habría perdido al cerrar la terminal.
+You'll see Claude do `mem_context` + `mem_search` and retrieve the Clean Architecture decision with the exact layers. Without Engram, this would have been lost when you closed the terminal.
 
-### Paso 5: Verificar desde el CLI
+### Step 5: Verify from the CLI
 
-En otra terminal, probá la búsqueda directa:
+In another terminal, try the direct search:
 
 ```bash
-engram search "arquitectura" --project stream-web
+engram search "architecture" --project stream-web
 ```
 
-Fijate que Engram tiene CLI propia. Podés buscar memorias sin abrir Claude Code. Por debajo es una base de datos SQLite con FTS5 (full-text search nativo).
+Notice that Engram has its own CLI. You can search memories without opening Claude Code. Underneath it's a SQLite database with FTS5 (native full-text search).
 
-## ¿Qué pasó?
+## What happened?
 
-Engram convierte a un agente sin estado en un sistema con memoria persistente. Las decisiones, convenciones y descubrimientos se guardan automáticamente y se recuperan en sesiones futuras. No es magia: es un protocolo que dispara `mem_save` ante ciertos triggers (decisiones, bugfixes, descubrimientos) y `mem_context` al inicio de cada sesión.
+Engram turns a stateless agent into a system with persistent memory. Decisions, conventions and discoveries are saved automatically and retrieved in future sessions. It's not magic: it's a protocol that triggers `mem_save` on certain triggers (decisions, bugfixes, discoveries) and `mem_context` at the start of each session.
 
-## Para pensar
+## Food for thought
 
-- ¿Qué pasa en un proyecto donde 3 devs usan el mismo agente pero no comparten memoria? ¿Cuántas decisiones de arquitectura se repiten o se contradicen?
-- Si el agente "recuerda" una decisión incorrecta, ¿cómo impacta eso en todo el código que genera después?
+- What happens in a project where 3 devs use the same agent but don't share memory? How many architecture decisions get repeated or contradicted?
+- If the agent "remembers" a wrong decision, how does that impact all the code it generates afterwards?

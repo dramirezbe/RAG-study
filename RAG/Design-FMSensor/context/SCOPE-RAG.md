@@ -29,9 +29,9 @@ Purpose: map each ingested document to the sections of the specification it supp
 
 | Document | Chunks | Scope |
 |----------|--------|-------|
-| `ANE_0105_2020.pdf` | 3,066 | ANE Resolución 105 (2020) — Colombian national spectrum plan. FM/AM national technical plans (Anexos 2 y 3), station classes (A/B/C), frequency assignments, power limits, antenna requirements, broadcasting allocation table. |
-| `ANE_0463_2020.pdf` | 924 | ANE Resolución 463 (2020) — Adds Chapter 2 to Resolución 105, modifies Anexo 2 (FM national technical plan). Updated frequency assignments and technical parameters. |
-| `ANE_0406_2026.pdf` | 157 | ANE Resolución 0406 (2026) — Latest modification to Anexo 2 of Resolución 105. Updated FM frequency allocations. |
+| `ANE_0105_2020.pdf` | 3,066 | ANE Resolution 105 (2020) — Colombian national spectrum plan. FM/AM national technical plans (Anexos 2 y 3), station classes (A/B/C), frequency assignments, power limits, antenna requirements, broadcasting allocation table. |
+| `ANE_0463_2020.pdf` | 924 | ANE Resolution 463 (2020) — Adds Chapter 2 to Resolution 105, modifies Anexo 2 (FM national technical plan). Updated frequency assignments and technical parameters. |
+| `ANE_0406_2026.pdf` | 157 | ANE Resolution 0406 (2026) — Latest modification to Anexo 2 of Resolution 105. Updated FM frequency allocations. |
 
 **Relevant to:**
 - Section 3 FM Compliance Measurands — Colombian-specific technical parameters and thresholds

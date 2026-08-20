@@ -45,7 +45,7 @@ Baseline issues inventory (from PLAN_RAG_latex.md §5; builder checks these off 
 **Changes**
 | # | Change | Why | Source |
 |---|--------|-----|--------|
-| 1 | L98: "(applicable jurisdiction)" → "(Colombia)" | State plainly that Resolución 105 is the Colombian national plan; generic phrasing obscured jurisdiction | ANE_0105_2020 (corpus title: Colombian national spectrum plan) |
+| 1 | L98: "(applicable jurisdiction)" → "(Colombia)" | State plainly that Resolution 105 is the Colombian national plan; generic phrasing obscured jurisdiction | ANE_0105_2020 (corpus title: Colombian national spectrum plan) |
 | 2 | L99–100: added ITU-R BS.450-4 list item (signal model, max deviation, stereophonic multiplex) | Human-approved gate decision (plan §5, Introduction gate); standard is used in Sections 3 and 7 but was absent from the context list | BS.450-4@4 |
 | 3 | L101: added ITU-R SM.2152 list item (SDR definition) | Human-approved gate decision; anchors the SDR terminology used throughout, esp. Section 1 reconfigurability | SM.2152@21–23 |
 
@@ -113,7 +113,7 @@ Baseline issues inventory (from PLAN_RAG_latex.md §5; builder checks these off 
 **Changes**
 | # | Change | Why | Source |
 |---|--------|-----|--------|
-| 1 | L233: unsourceable formula $\pm(0.5 + 2 \times f \times 10^{-5})$ kHz → $\pm 2$ kHz (ANE FM plan + FCC §73.1545(b) >10 W) / $\pm 3$ kHz (FCC ≤10 W) | Formula had NO corpus source. **PLAN DEVIATION**: the plan expected "ANE sets no FM tolerance" — PDF verification (mandated by the plan itself) found ANE Anexo 2 §5.1.1: "máxima variación… será de + 2 kHz" (FM service). Index misses it; local PDF has it | 47_CFR_Part_73@1670; ANE_0105_2020 PDF line 2363 (Anexo 2, §5.1.1) |
+| 1 | L233: unsourceable formula $\pm(0.5 + 2 \times f \times 10^{-5})$ kHz → $\pm 2$ kHz (ANE FM plan + FCC §73.1545(b) >10 W) / $\pm 3$ kHz (FCC ≤10 W) | Formula had NO corpus source. **PLAN DEVIATION**: the plan expected "ANE sets no FM tolerance" — PDF verification (mandated by the plan itself) found ANE Annex 2 §5.1.1: "maximum variation… shall be + 2 kHz" (FM service). Index misses it; local PDF has it | 47_CFR_Part_73@1670; ANE_0105_2020 PDF line 2363 (Annex 2, §5.1.1) |
 | 2 | L326: "Three capability classes" → "The following capability classes" | Four classes listed after an intro saying "three" (bug) | INTERNAL |
 | 3 | L345: parenthetical now includes conditional compliance-grade | List omitted the 4th class | INTERNAL |
 | 4 | L359: GUM → (GUM, JCGM 100:2008) | Harmonized with Section 9 L1078 citation | ISO_IEC_17025_2017@183 (bibliography, Guide 98-3) |
@@ -131,7 +131,7 @@ Baseline issues inventory (from PLAN_RAG_latex.md §5; builder checks these off 
 **Compile status**: ✅ PASS — `latexmk -g` zero errors; aux cleaned
 
 **Sources consulted**
-- 47_CFR_Part_73@1670 (E1), @818 (E3), @789 (E5); BS.412-9@5 (E12), @26 (E14); BS.450-4@4, @11 (E16); ANE_0105_2020@1156–1161 (E8), @1170–1172 (E11 STL); docs-RAG/ANE_0105_2020.pdf Anexo 2 §5.1.1/5.1.4/5.1.5 (PDF-verified)
+- 47_CFR_Part_73@1670 (E1), @818 (E3), @789 (E5); BS.412-9@5 (E12), @26 (E14); BS.450-4@4, @11 (E16); ANE_0105_2020@1156–1161 (E8), @1170–1172 (E11 STL); docs-RAG/ANE_0105_2020.pdf Annex 2 §5.1.1/5.1.4/5.1.5 (PDF-verified)
 
 - [x] **Human approval** (2026-08-16, JS): approved Section 3; L233 = "ANE + FCC" (recommended option)
 

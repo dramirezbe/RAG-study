@@ -1,14 +1,14 @@
 # Spec-Driven Development (SDD)
 
-## ¿Qué es Spec-Driven Development?
+## What is Spec-Driven Development?
 
-**Descripción:** Metodología de desarrollo donde la especificación (*spec*) es el artefacto primario y fuente de verdad del proyecto. En lugar de escribir código directamente, defines *qué* debe hacer el sistema en lenguaje natural estructurado, y un agente de IA traduce esa especificación a implementación. La spec no es documentación accesoria — es el *input* que gobierna todo el ciclo: generación de código, tests, validación, y mantenimiento.
+**Description:** Development methodology where the specification (*spec*) is the primary artifact and source of truth of the project. Instead of writing code directly, you define *what* the system should do in structured natural language, and an AI agent translates that specification into implementation. The spec is not accessory documentation — it is the *input* that governs the entire cycle: code generation, tests, validation, and maintenance.
 
-**Analogía:** Así como TDD (Test-Driven Development) puso los tests antes del código, SDD pone la especificación antes de los tests. No escribes una línea de código hasta que la spec está clara, validada y versionada.
+**Analogy:** Just as TDD (Test-Driven Development) put tests before code, SDD puts the specification before tests. You don't write a single line of code until the spec is clear, validated, and versioned.
 
 ---
 
-## El ciclo SDD
+## The SDD cycle
 
 ```
 SPEC → PLAN → GENERATE → VALIDATE → ITERATE
@@ -17,106 +17,106 @@ SPEC → PLAN → GENERATE → VALIDATE → ITERATE
 ```
 
 ### 1. SPEC
-Escribes la especificación en lenguaje natural estructurado. Define:
-- **Entidades y modelos:** Qué datos maneja el sistema.
-- **Comportamientos:** Qué acciones puede realizar (endpoints, funciones, flujos).
-- **Restricciones:** Reglas de negocio, invariantes, validaciones.
-- **Edge cases:** Qué pasa en condiciones límite o error.
+You write the specification in structured natural language. Define:
+- **Entities and models:** What data the system handles.
+- **Behaviors:** What actions it can perform (endpoints, functions, flows).
+- **Constraints:** Business rules, invariants, validations.
+- **Edge cases:** What happens under boundary or error conditions.
 
-La spec se escribe una vez y se versiona en el repositorio como cualquier otro archivo fuente.
+The spec is written once and versioned in the repository like any other source file.
 
 ### 2. PLAN
-El agente lee la spec, la descompone en tareas atómicas, y genera un plan de implementación. Cada tarea tiene:
-- Descripción precisa de lo que debe producir.
-- Skills y contexto requeridos.
-- Dependencias entre tareas.
-- Criterios de aceptación.
+The agent reads the spec, breaks it down into atomic tasks, and generates an implementation plan. Each task has:
+- Precise description of what it must produce.
+- Required skills and context.
+- Dependencies between tasks.
+- Acceptance criteria.
 
 ### 3. GENERATE
-Sub-agentes efímeros ejecutan cada tarea del plan:
-- Un agente genera la estructura de archivos y scaffolding.
-- Otro implementa los modelos y tipos.
-- Otro escribe la lógica de negocio.
-- Otro genera los tests que validan la spec.
-- Otro escribe migraciones, configs, y boilerplate.
+Ephemeral sub-agents execute each task of the plan:
+- One agent generates the file structure and scaffolding.
+- Another implements the models and types.
+- Another writes the business logic.
+- Another generates the tests that validate the spec.
+- Another writes migrations, configs, and boilerplate.
 
-Cada sub-agente solo ve su tarea y la sección relevante de la spec. Contexto mínimo, foco máximo.
+Each sub-agent only sees its task and the relevant section of the spec. Minimal context, maximum focus.
 
 ### 4. VALIDATE
-Post-generación, el ciclo de validación verifica que el output cumple la spec:
-- **Tests automáticos:** Los tests generados en la fase anterior se ejecutan. Si fallan, el agente itera.
-- **Spec-compliance check:** Un agente revisor compara la implementación contra la spec original y reporta divergencias.
-- **Linting y typecheck:** Barreras de calidad estándar del stack del proyecto.
-- **Human-in-the-loop (opcional):** Revisión humana en puntos críticos (seguridad, decisiones de arquitectura).
+Post-generation, the validation cycle verifies that the output complies with the spec:
+- **Automatic tests:** The tests generated in the previous phase are run. If they fail, the agent iterates.
+- **Spec-compliance check:** A reviewer agent compares the implementation against the original spec and reports divergences.
+- **Linting and typecheck:** Standard quality gates of the project's stack.
+- **Human-in-the-loop (optional):** Human review at critical points (security, architecture decisions).
 
 ### 5. ITERATE
-Cambios en la spec disparan re-generación incremental:
-- El agente detecta qué partes del código quedaron obsoletas.
-- Regenera solo lo necesario, preservando el resto.
-- Corre los tests de regresión para asegurar que nada se rompió.
+Changes to the spec trigger incremental re-generation:
+- The agent detects which parts of the code became obsolete.
+- Regenerates only what is necessary, preserving the rest.
+- Runs regression tests to make sure nothing broke.
 
 ---
 
-## Ventajas sobre el desarrollo tradicional con IA
+## Advantages over traditional development with AI
 
-### Consistencia arquitectónica
-En un chat libre con IA, cada sesión puede tomar decisiones inconsistentes. Con SDD, la spec actúa como *constraint* arquitectónico: el agente no improvisa, sigue la especificación. Dos features implementadas en sesiones separadas mantienen coherencia porque ambas leen la misma spec.
+### Architectural consistency
+In a free chat with AI, each session can make inconsistent decisions. With SDD, the spec acts as an architectural *constraint*: the agent does not improvise, it follows the specification. Two features implemented in separate sessions maintain coherence because both read the same spec.
 
-### Auditabilidad
-La spec es texto plano versionado. Puedes hacer `git diff` y ver exactamente qué cambió en los requisitos y cómo eso se refleja en el código generado. El *blame* pasa de "el agente decidió esto" a "la spec dice esto". Trazabilidad completa de requisito a implementación.
+### Auditability
+The spec is versioned plain text. You can run `git diff` and see exactly what changed in the requirements and how that is reflected in the generated code. The *blame* moves from "the agent decided this" to "the spec says this." Full traceability from requirement to implementation.
 
-### Reproducibilidad
-Dada la misma spec y el mismo modelo, obtienes la misma arquitectura. No dependes del historial de una conversación ni de prompts acumulados. La spec es determinística: puedes regenerar el proyecto completo desde cero si es necesario.
+### Reproducibility
+Given the same spec and the same model, you get the same architecture. You don't depend on a conversation history or accumulated prompts. The spec is deterministic: you can regenerate the entire project from scratch if necessary.
 
-### Paralelismo real
-Como la spec define el contrato entre módulos (interfaces, tipos, responsabilidades), múltiples sub-agentes pueden implementar partes independientes en paralelo sin conflictos. Cada uno conoce los límites de su módulo y las interfaces con los demás.
+### Real parallelism
+Since the spec defines the contract between modules (interfaces, types, responsibilities), multiple sub-agents can implement independent parts in parallel without conflicts. Each one knows the boundaries of its module and the interfaces with the others.
 
-### Onboarding de agentes
-Un agente nuevo no necesita leer 3000 líneas de código para entender el proyecto. Lee la spec (200-500 líneas), entiende el sistema completo, y puede contribuir inmediatamente. La spec es el *system prompt* del proyecto.
+### Agent onboarding
+A new agent doesn't need to read 3000 lines of code to understand the project. It reads the spec (200-500 lines), understands the whole system, and can contribute immediately. The spec is the project's *system prompt*.
 
-### Refactoring seguro
-Antes de un refactor grande, actualizas la spec. El agente regenera las partes afectadas asegurando consistencia global. No hay "esto lo toqué de más" — la spec define exactamente qué debía cambiar.
+### Safe refactoring
+Before a big refactor, you update the spec. The agent regenerates the affected parts ensuring global consistency. There is no "I touched too much" — the spec defines exactly what should have changed.
 
 ---
 
-## Cuándo usar SDD
+## When to use SDD
 
-| Escenario | SDD | Enfoque tradicional |
+| Scenario | SDD | Traditional approach |
 |---|---|---|
-| **Proyecto nuevo** | Spec desde cero, generación completa | Chat iterativo, arquitectura emergente |
-| **Feature grande** | Actualizar spec → regenerar módulo | Prompt ad-hoc, riesgo de inconsistencia |
-| **Refactor** | Spec-driven: cambiar spec primero | Explorar código → adivinar impacto |
-| **Code review de IA** | Validar spec-compliance | Revisar línea por línea a ciegas |
-| **Mantenimiento continuo** | Spec es living document | El código es la única verdad |
-| **Prototipo rápido** | Overhead innecesario | Chat directo, sin spec |
+| **New project** | Spec from scratch, complete generation | Iterative chat, emergent architecture |
+| **Large feature** | Update spec → regenerate module | Ad-hoc prompt, risk of inconsistency |
+| **Refactor** | Spec-driven: change the spec first | Explore code → guess impact |
+| **AI code review** | Validate spec-compliance | Blind line-by-line review |
+| **Ongoing maintenance** | Spec is a living document | The code is the only truth |
+| **Quick prototype** | Unnecessary overhead | Direct chat, no spec |
 
 ---
 
-## Relación con el stack agentivo
+## Relationship with the agentic stack
 
-SDD es el complemento natural al patrón descrito en [agents-evolution.md](agents-evolution.md):
+SDD is the natural complement to the pattern described in [agents-evolution.md](agents-evolution.md):
 
 ```
-SPEC (fuente de verdad)
+SPEC (source of truth)
   │
-  ├── Orquestador: lee la spec, genera el plan
+  ├── Orchestrator: reads the spec, generates the plan
   │     │
-  │     ├── Skill: carga la skill relevante según el módulo
+  │     ├── Skill: loads the relevant skill according to the module
   │     │
-  │     └── Sub-agentes: implementan tareas del plan
+  │     └── Sub-agents: implement plan tasks
   │           │
-  │           └── Memoria persistente: la spec misma es memoria
+  │           └── Persistent memory: the spec itself is memory
   │
-  └── VALIDATE: spec-compliance check → iterar
+  └── VALIDATE: spec-compliance check → iterate
 ```
 
-La spec cierra el ciclo: es el *input* que gobierna todo y el *output* contra el que se valida todo. El agente no decide *qué* construir — la spec lo decide. El agente decide *cómo* construirlo.
+The spec closes the loop: it is the *input* that governs everything and the *output* against which everything is validated. The agent does not decide *what* to build — the spec decides it. The agent decides *how* to build it.
 
 ---
 
-## Limitaciones actuales
+## Current limitations
 
-- **Ambigüedad en lenguaje natural:** Una spec ambigua produce código ambiguo. La calidad del output depende directamente de la precisión de la spec. Escribir buenas specs es una habilidad en sí misma.
-- **Sobrecarga para tareas pequeñas:** Para un fix de una línea, escribir una spec es overhead. SDD brilla en features, módulos y sistemas completos, no en micro-cambios.
-- **Deriva spec-código:** Si alguien modifica el código sin actualizar la spec, la fuente de verdad se parte. Requiere disciplina de equipo o tooling que detecte divergencias automáticamente.
-- **Creatividad limitada por la spec:** El agente solo puede innovar dentro de los márgenes que la spec define. Si la spec no contempla una optimización, el agente no la propondrá.
+- **Ambiguity in natural language:** An ambiguous spec produces ambiguous code. The quality of the output depends directly on the precision of the spec. Writing good specs is a skill in itself.
+- **Overhead for small tasks:** For a one-line fix, writing a spec is overhead. SDD shines on features, modules, and complete systems, not on micro-changes.
+- **Spec-code drift:** If someone modifies the code without updating the spec, the source of truth splits. It requires team discipline or tooling that detects divergences automatically.
+- **Creativity limited by the spec:** The agent can only innovate within the margins the spec defines. If the spec does not contemplate an optimization, the agent will not propose it.

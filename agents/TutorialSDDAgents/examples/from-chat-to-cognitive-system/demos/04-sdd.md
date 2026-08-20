@@ -1,94 +1,94 @@
-# Ejercicio: SDD — De idea a dashboard en minutos
+# Exercise: SDD — From idea to dashboard in minutes
 
-> Vas a usar Spec-Driven Development para generar un dashboard de ciberseguridad completo desde cero. Sin escribir una línea de código manualmente.
+> You're going to use Spec-Driven Development to generate a complete cybersecurity dashboard from scratch. Without writing a single line of code manually.
 
-## Prerequisitos
+## Prerequisites
 
-- Claude Code instalado y configurado
-- Agent Teams Lite activo (CLAUDE.md con reglas de orquestación)
-- Engram funcionando (para persistencia entre fases)
-- Una carpeta vacía para el proyecto (ej: `mkdir ~/cyber-dashboard && cd ~/cyber-dashboard`)
+- Claude Code installed and configured
+- Agent Teams Lite active (CLAUDE.md with orchestration rules)
+- Engram working (for persistence between phases)
+- An empty folder for the project (e.g. `mkdir ~/cyber-dashboard && cd ~/cyber-dashboard`)
 
-## Contexto
+## Context
 
-"Vibe coding" es tirarle un prompt al agente y rezar para que salga algo potable. A veces funciona, a veces te genera un Frankenstein de código que no podés mantener ni explicar. SDD es lo opuesto: en vez de "haceme un dashboard", pasás por un pipeline de ingeniería — explorar, proponer, especificar, diseñar, descomponer en tareas, implementar, verificar. Cada fase la ejecuta un sub-agente con contexto limpio que produce un artefacto revisable. El resultado no es "lo que al LLM se le cantó generar", sino código que cumple especificaciones concretas que vos definiste.
+"Vibe coding" is throwing a prompt at the agent and praying something decent comes out. Sometimes it works, sometimes it generates a Frankenstein of code you can't maintain or explain. SDD is the opposite: instead of "make me a dashboard", you go through an engineering pipeline — explore, propose, specify, design, break down into tasks, implement, verify. Each phase is executed by a sub-agent with clean context that produces a reviewable artifact. The result isn't "whatever the LLM felt like generating", but code that meets concrete specifications you defined.
 
-## Ejercicio
+## Exercise
 
-### Paso 1: Iniciar el cambio
+### Step 1: Start the change
 
 ```prompt
 /sdd-new cyber-dashboard
 ```
 
-Cuando te pregunte de qué se trata, explicale:
+When it asks what it's about, explain:
 
 ```prompt
-Quiero crear un dashboard de ciberseguridad en un solo archivo HTML con CSS y JS inline. Tema visual Kanagawa Blur (fondo #1A1B26, cards #24283B con glassmorphism). Debe tener: header con título "Security Dashboard" y badge de status verde, 4 cards de severidad (Critical rojo #F7768E, High naranja #FF9E64, Medium amarillo #DFBD76, Low azul #7AA2F7) con contadores animados, un gráfico de barras horizontal mostrando vulnerabilidades por provider (AWS, GCP, Azure), animaciones de entrada staggered, hover con glow, y la barra de status con pulse breathing. Data hardcodeada pero realista.
+I want to create a cybersecurity dashboard in a single HTML file with inline CSS and JS. Visual theme Kanagawa Blur (background #1A1B26, cards #24283B with glassmorphism). It must have: header with title "Security Dashboard" and a green status badge, 4 severity cards (Critical red #F7768E, High orange #FF9E64, Medium yellow #DFBD76, Low blue #7AA2F7) with animated counters, a horizontal bar chart showing vulnerabilities by provider (AWS, GCP, Azure), staggered entrance animations, hover with glow, and the status bar with pulse breathing. Hardcoded but realistic data.
 ```
 
-Vas a ver que SDD lanza un Explorer que analiza los requerimientos y después un Proposer que genera una propuesta formal con scope, approach y rollback plan. Fijate que son dos sub-agentes distintos, cada uno con contexto fresco.
+You'll see SDD launch an Explorer that analyzes the requirements and then a Proposer that generates a formal proposal with scope, approach and rollback plan. Notice they're two different sub-agents, each with fresh context.
 
-### Paso 2: Generar especificaciones y diseño
-
-```prompt
-/sdd-continue
-```
-
-Esto genera specs en formato Given/When/Then — lo que el dashboard DEBE cumplir. No es código, son criterios de aceptación verificables.
+### Step 2: Generate specifications and design
 
 ```prompt
 /sdd-continue
 ```
 
-Ahora se genera el design: decisiones técnicas, estructura del archivo, patrones a usar. Specs y design pueden salir en cualquier orden porque son paralelas en el DAG de dependencias — eso es normal.
-
-### Paso 3: Generar tareas
+This generates specs in Given/When/Then format — what the dashboard MUST comply with. It's not code, it's verifiable acceptance criteria.
 
 ```prompt
 /sdd-continue
 ```
 
-El Task Planner lee las specs + design y genera un plan de ejecución concreto: tareas numeradas, ordenadas, con criterios de aceptación individuales. Fijate que cada tarea es chica y enfocada — no es "hacé todo el dashboard".
+Now the design is generated: technical decisions, file structure, patterns to use. Specs and design can come out in any order because they're parallel in the dependency DAG — that's normal.
 
-### Paso 4: Implementar
+### Step 3: Generate tasks
+
+```prompt
+/sdd-continue
+```
+
+The Task Planner reads the specs + design and generates a concrete execution plan: numbered tasks, ordered, with individual acceptance criteria. Notice each task is small and focused — it's not "do the whole dashboard".
+
+### Step 4: Implement
 
 ```prompt
 /sdd-apply
 ```
 
-Recién ACÁ se escribe código. El Implementer arranca con contexto limpio, lee las tareas + specs + design, y genera el HTML/CSS/JS contra esos artefactos. No improvisa: implementa lo que se especificó.
+Only HERE is code written. The Implementer starts with clean context, reads the tasks + specs + design, and generates the HTML/CSS/JS against those artifacts. It doesn't improvise: it implements what was specified.
 
-### Paso 5: Verificar
+### Step 5: Verify
 
 ```prompt
 /sdd-verify
 ```
 
-El Verificador chequea la implementación CONTRA las specs del paso 2. No es "me parece que está bien" — es verificación sistemática spec por spec. Vas a ver un reporte con qué pasó y qué falló.
+The Verifier checks the implementation AGAINST the specs from step 2. It's not "looks fine to me" — it's systematic verification spec by spec. You'll see a report with what passed and what failed.
 
-### Paso 6: Ver el resultado
+### Step 6: See the result
 
 ```bash
 open index.html
 ```
 
-Abrí el archivo en el browser. Vas a ver las cards con glassmorphism apareciendo con fade staggered, los números de severidad contando desde cero, las barras del chart creciendo de izquierda a derecha, y el badge verde respirando con un pulse suave. Todo en una paleta Kanagawa Blur sobre fondo oscuro.
+Open the file in the browser. You'll see the glassmorphism cards appearing with staggered fade, the severity numbers counting up from zero, the chart bars growing left to right, and the green badge breathing with a soft pulse. All in a Kanagawa Blur palette on a dark background.
 
-## ¿Qué pasó?
+## What happened?
 
-Generaste un dashboard completo con 6 sub-agentes, cada uno con contexto limpio, cada uno produciendo un artefacto revisable. La idea pasó por exploración, propuesta, especificación, diseño, descomposición en tareas, implementación y verificación. Eso NO es vibe coding — es ingeniería con agentes.
+You generated a complete dashboard with 6 sub-agents, each with clean context, each producing a reviewable artifact. The idea went through exploration, proposal, specification, design, task breakdown, implementation and verification. That's NOT vibe coding — it's engineering with agents.
 
-La diferencia clave: cada línea de código tiene una spec detrás. Si algo no funciona, sabés exactamente qué spec se rompió, en qué fase se definió, y dónde corregirlo. Cuando le tirás un prompt suelto a un chat y rezás, no tenés nada de eso.
+The key difference: every line of code has a spec behind it. If something doesn't work, you know exactly which spec broke, in which phase it was defined, and where to fix it. When you throw a loose prompt at a chat and pray, you have none of that.
 
 ```
 idea → explore → proposal → specs + design → tasks → apply → verify
                                                         ↑
-                                             cada fase es un agente
-                                             con contexto limpio
+                                             each phase is an agent
+                                             with clean context
 ```
 
-## Para pensar
+## Food for thought
 
-- ¿Qué fase atraparía la mayoría de los bugs ANTES de que lleguen a producción? ¿Por qué esa y no otra?
-- Si le pidieras este mismo dashboard a un chat sin SDD, ¿qué cosas podrían salir diferentes? ¿Qué se perdería?
+- Which phase would catch most bugs BEFORE they reach production? Why that one and not another?
+- If you asked this same dashboard from a chat without SDD, what things could come out different? What would be lost?

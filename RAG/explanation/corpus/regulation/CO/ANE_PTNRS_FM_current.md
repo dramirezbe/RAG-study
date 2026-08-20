@@ -4,12 +4,12 @@
 
 - **Authority:** Agencia Nacional del Espectro (ANE)
 - **Jurisdiction:** CO
-- **Document:** Resolución ANE 105 de 2020 — Anexo 2, *Plan Técnico Nacional de Radiodifusión Sonora en Frecuencia Modulada*, as currently compiled and amended
+- **Document:** ANE Resolution 105 (2020) — Annex 2, *National Technical Plan for FM Sound Broadcasting (PTNRS-FM)*, as currently compiled and amended
 - **Status:** Current MinTIC legal compilation consulted 2026-08-14
 - **Primary source URL:** https://normograma.mintic.gov.co/mintic/compilacion/docs/resolucion_ane_0105_2020.htm
 - **Amendment-context URL:** https://normograma.mintic.gov.co/mintic/compilacion/docs/resolucion_ane_0406_2026.htm
 
-The FM plan was added to Resolución ANE 105 de 2020 through Resolución ANE 463 de 2020, which added Chapter 2 of Title 2 and Annex 2. Subsequent modifications exist, including Resolución ANE 742 de 2023. Resolución ANE 406 de 2026 modifies portions of Annex 2, including numerals 3.33, 9.1.1, and 6.1. This curated teaching source is based on the current MinTIC legal compilation and does not assume that the original 2020 text alone remains current.
+The FM plan was added to ANE Resolution 105 (2020) through ANE Resolution 463 (2020), which added Chapter 2 of Title 2 and Annex 2. Subsequent modifications exist, including ANE Resolution 742 (2023). ANE Resolution 406 (2026) modifies portions of Annex 2, including numerals 3.33, 9.1.1, and 6.1. This curated teaching source is based on the current MinTIC legal compilation and does not assume that the original 2020 text alone remains current.
 
 This is a narrow teaching subset, not legal advice or a substitute for checking the current compilation, amendments, authorization, and applicable administrative act.
 
@@ -20,27 +20,27 @@ This is a narrow teaching subset, not legal advice or a substitute for checking 
 - **Status:** Current compilation
 - **Source URL:** https://normograma.mintic.gov.co/mintic/compilacion/docs/resolucion_ane_0105_2020.htm
 
-Article 2.2.1 adopts the *Plan Técnico Nacional de Radiodifusión Sonora en Frecuencia Modulada (F.M.)* as Annex 2. The plan establishes the technical framework for planning radio channels for the sound-broadcasting service in the frequency band **88 MHz to 108 MHz**.
+Article 2.2.1 adopts the *National Technical Plan for FM Sound Broadcasting (PTNRS-FM)* as Annex 2. The plan establishes the technical framework for planning radio channels for the sound-broadcasting service in the frequency band **88 MHz to 108 MHz**.
 
-## CO_ANE_FREQ_OPERATION — Section 5.1.1 Frecuencia de Operación
+## CO_ANE_FREQ_OPERATION — Section 5.1.1 Operating Frequency
 
 - **Regulatory section:** Annex 2, section 5.1.1
 - **Applicability:** Maximum admissible variation of the main carrier for an FM sound-broadcasting station governed by this plan
 - **Status:** Current compilation
 - **Source URL:** https://normograma.mintic.gov.co/mintic/compilacion/docs/resolucion_ane_0105_2020.htm
 
-> La máxima variación de frecuencia admisible para la portadora principal será de + 2 kHz.
+> The maximum admissible frequency variation for the main carrier shall be + 2 kHz.
 
 **Normalization note:** The current HTML legal compilation renders this symbol/value as “+ 2 kHz”; no editorial conversion to ±2 kHz has been performed.
 
-## CO_ANE_MAX_DEVIATION — Section 5.1.2 Excursión Máxima de Frecuencia
+## CO_ANE_MAX_DEVIATION — Section 5.1.2 Maximum Frequency Excursion
 
 - **Regulatory section:** Annex 2, section 5.1.2
 - **Applicability:** Maximum permissible frequency excursion for an FM carrier governed by this plan
 - **Status:** Current compilation
 - **Source URL:** https://normograma.mintic.gov.co/mintic/compilacion/docs/resolucion_ane_0105_2020.htm
 
-> La máxima excursión de frecuencia permisible es de 75 kHz a uno y otro lado de la portadora.
+> The maximum permissible frequency excursion is 75 kHz on either side of the carrier.
 
 ## CO_ANE_OOB_EMISSIONS — Section 5.1.4 Unwanted Emissions
 
