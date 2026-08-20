@@ -2,7 +2,7 @@
 
 ## Project overview
 
-This project is a collection of Jupyter notebooks for prompt engineering experiments and tutorials. It contains a curated set of skills for notebook creation, editing, and quality auditing. All work lives under `/home/javastral/GIT/UNAL/GCPDS-trabajos/2026/JupyterPrompting/`.
+This project is a collection of Jupyter notebooks for prompt engineering experiments and tutorials. It contains a curated set of skills for notebook creation, editing, and quality auditing. All work lives under `prompting/notebook-python/` in this repository.
 
 ## Available skills
 

@@ -216,3 +216,27 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# RAG-study: generated artifacts and local state
+.atl/
+lancedb/
+models/
+chroma-rag-index/
+*.Zone.Identifier
+
+# Upstream clones (embedded git repos): never track their contents.
+explore-apps/clones/
+**/copy/
+
+# Web presentation examples
+.DS_Store
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+node_modules/
+
+# excalidraw-diagram-skill: generated renders and local state
+.agents/skills/excalidraw-diagram-skill/**/*.png
+.agents/skills/excalidraw-diagram-skill/uv.lock

@@ -12,7 +12,7 @@ Exploration folder for RAG MCP research. The source of truth for each app is its
   - `ARCHITECTURE.md` — RAG approach and why, tools used, chunking, vector database, testing,
   - `HOW_TO_USE.md` — installation and parametrizable parameters.
 - `explore-apps/COMPARE.md` — side-by-side comparison and recommendation.
-- `.gitignore` — ignores `**/copy/` and `explore-apps/clones/`.
+- Root `.gitignore` — ignores `**/copy/` and `explore-apps/clones/` (single consolidated ignore file since 2026-08-20).
 
 ## Working rules
 

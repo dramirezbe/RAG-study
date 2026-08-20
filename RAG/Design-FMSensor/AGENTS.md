@@ -135,7 +135,7 @@ Check current index state with `local-rag_status`:
 - `models/` — ML model files (Xenova/)
 - `lancedb/` — Vector database for RAG queries
 - `.atl/` — Agent tooling cache (skill registry)
-- `.gitignore` — Excludes `.atl/`, `models/`, `lancedb/`
+- Root `.gitignore` — Excludes `.atl/`, `models/`, `lancedb/` (single consolidated ignore file since 2026-08-20)
 
 ## Document Sections
 
