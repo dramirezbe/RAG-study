@@ -1,0 +1,827 @@
+\documentclass[11pt,a4paper]{article}
+
+% ==============================================================================
+% DOCUMENT CONFIGURATION & PACKAGES
+% ==============================================================================
+
+% ---------- Encoding and Fonts ----------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{textcomp}
+
+% ---------- Page Geometry ----------
+\usepackage{geometry}
+\geometry{
+    a4paper,
+    top=25mm,
+    bottom=25mm,
+    left=25mm,
+    right=25mm,
+    headheight=14pt,
+    footskip=12mm
+}
+
+% ---------- Math & Symbols ----------
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{bm}
+
+% ---------- Colors ----------
+\usepackage[table]{xcolor}
+\definecolor{primary}{RGB}{0,51,102}       % Deep Navy Blue
+\definecolor{secondary}{RGB}{41,128,185}   % Cobalt Accent
+\definecolor{headerbg}{gray}{0.92}         % Light table header gray
+\definecolor{codebg}{gray}{0.96}           % Light code block gray
+\definecolor{textdark}{RGB}{33,33,33}      % Soft Black for text
+\definecolor{rulecolor}{RGB}{200,200,200}  % Light divider rule
+
+% ---------- Section Headings Styling ----------
+\usepackage{titlesec}
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{primary}}{\thesection}{1em}{}[\color{secondary}\titlerule]
+\titlespacing*{\section}{0pt}{3.5ex plus 1ex minus .2ex}{2ex plus .2ex}
+
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{secondary}}{\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{2.5ex plus 1ex minus .2ex}{1.2ex plus .2ex}
+
+\titleformat{\subsubsection}
+  {\normalfont\normalsize\bfseries\color{textdark}}{\thesubsubsection}{1em}{}
+\titlespacing*{\subsubsection}{0pt}{2ex plus 0.8ex minus .2ex}{0.8ex plus .2ex}
+
+% ---------- Headers & Footers ----------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{gray}Hardware Selection \& Design Specification --- RNI Sensor}
+\fancyhead[R]{\small\color{gray}\nouppercase{\leftmark}}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% ---------- Tables & Lists ----------
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{enumitem}
+\setlist{nosep, leftmargin=1.5em}
+
+% Custom column types for tabular environments
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
+
+% ---------- Graphics, Diagrams & Captions ----------
+\usepackage{graphicx}
+\usepackage{caption}
+\captionsetup{
+    labelfont={bf,color=primary},
+    font=small,
+    skip=8pt
+}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,fit}
+
+% ---------- Hyperlinks & PDF Metadata ----------
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=primary,
+    citecolor=secondary,
+    urlcolor=secondary,
+    pdfauthor={Universidad Nacional de Colombia},
+    pdftitle={Hardware Selection and Normative Design Justification for SDR-Based Non-Ionizing Radiation (RNI) Sensor},
+    pdfsubject={Hardware Component Selection, Normative Sizing, SDR Front-End, Isotropic Probe, Edge Processing},
+    pdfkeywords={Hardware Selection, SDR, RTL-SDR, HackRF Pro, USRP B200mini-i, RNI Sensor, ICNIRP, ITU-T K.91, ITU-T K.61, ANE 773, Jetson Orin},
+    bookmarksnumbered=true,
+    pdfpagemode=UseOutlines
+}
+
+% ---------- Bibliography Configuration ----------
+\bibliographystyle{IEEEtran}
+
+% ==============================================================================
+% METADATA DEFINITIONS
+% ==============================================================================
+\title{\textbf{\LARGE\color{primary} Hardware Architecture and Component Selection Specification \\ for SDR-Based Non-Ionizing Radiation (RNI) Monitoring} \\[0.5em]
+\large\color{secondary} Component-by-Component Design Justification, Normative Sizing, and Regulatory Compliance}
+
+\author{\textbf{Research \& Development Group} \\
+Universidad Nacional de Colombia}
+
+\date{\today}
+
+% ==============================================================================
+% DOCUMENT BODY
+% ==============================================================================
+\begin{document}
+
+% ---------- Title & Cover ----------
+\maketitle
+\thispagestyle{plain}
+
+% ---------- Abstract ----------
+\begin{abstract}
+\noindent \textit{[Placeholder: Abstract --- to be written once the hardware selection and normative justification are complete.]}
+\end{abstract}
+
+\vspace{1em}
+\hrule
+\vspace{1em}
+
+% ---------- Automatic Table of Contents ----------
+\tableofcontents
+\vspace{1.5em}
+\hrule
+\newpage
+
+% ==============================================================================
+% SECTION 1: HARDWARE DESIGN OBJECTIVES & SYSTEM SCOPE
+% ==============================================================================
+\section{Hardware Design Objectives and Scope}
+\label{sec:design_objectives}
+
+This document specifies the hardware architecture, component selection, and normative justification for a family of Software-Defined Radio (SDR)-based Non-Ionizing Radiation (RNI) sensors designed to assess human exposure to radiofrequency electromagnetic fields in enclosed environments with high IoT device density.
+
+\subsection{Project Context}
+
+The sensor family is developed under a joint research agreement between Universidad Nacional de Colombia (Manizales) and Universidad de Caldas, funded by the 2024 joint call. The target application is compliance monitoring of electric field exposure levels (700~MHz--6~GHz) in enclosed spaces with dense IoT deployments---offices, classrooms, laboratories, and public venues---where multiple wireless technologies (Wi-Fi 2.4/5/6~GHz, Bluetooth, LTE, 5G NR, IoT LPWAN) operate simultaneously.
+
+\subsection{Design Philosophy: Three Band-Specific Sensors}
+
+Rather than a single wideband sensor covering the entire 700~MHz--6~GHz range, the design adopts a \textbf{band-specific approach} with three optimised sensor variants. This decision is driven by:
+
+\begin{itemize}
+    \item \textbf{Antenna physics:} An antenna optimised for Sub-1~GHz (lambda/4 $\approx$ 43~cm at 175~MHz) cannot be co-located with 5/6~GHz elements without mutual coupling degradation. Separating bands into distinct sensors eliminates inter-band interference.
+    \item \textbf{Filter selectivity:} Per-band analog pre-selection filters suppress out-of-band interferers before the ADC, increasing effective dynamic range by 20--30~dB compared to a single wideband front-end.
+    \item \textbf{Cost and complexity:} A single wideband sensor would require expensive wideband components (SP6T+ switch, wideband LNA, multi-octave filter bank). Three band-optimised sensors use commodity components and reduce per-unit cost.
+    \item \textbf{Field deployment:} Operators carry only the sensor relevant to the bands present in the target enclosure, reducing weight and simplifying the measurement workflow.
+\end{itemize}
+
+\subsection{Sensor Family Overview}
+
+Table~\ref{tab:sensor_family} summarises the three sensor variants.
+
+\begin{table}[ht]
+\centering
+\caption{Sensor family: band allocation, SDR core, and antenna architecture.}
+\label{tab:sensor_family}
+\small
+\begin{tabular}{L{1.8cm} L{3.0cm} L{3.5cm} L{4.5cm}}
+\toprule
+\textbf{Variant} & \textbf{Band} & \textbf{SDR Core} & \textbf{Antenna Architecture} \\
+\midrule
+Sensor~A & Sub-1~GHz (902--928~MHz) & RTL-SDR & Discrete triaxial array (3$\times$ external antennas on 3D-printed base) + SP3T/SP4T switch \\
+Sensor~B & 2.4~GHz ISM (2.400--2.500~GHz) & HackRF Pro & Passive triaxial antenna (3$\times$ SMA outputs) + SP3T/SP4T switch \\
+Sensor~C & 5/6~GHz (5.150--7.125~GHz) & USRP B200mini-i & Triaxial antenna with integrated MUX (1$\times$ SMA output, direct SDR connection) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Applicable Normative Framework}
+
+All three sensor variants shall comply with the same normative framework:
+
+\begin{itemize}
+    \item \textbf{ICNIRP 2020} \cite{icnirp2020}: Reference levels and basic restrictions for RF-EMF exposure (100~kHz--300~GHz).
+    \item \textbf{ANE Resolution 773/2023} \cite{ane_res773_2023}: Colombian adoption of ICNIRP limits with measurement methodology requirements.
+    \item \textbf{ITU-T K.91} \cite{itut_k91}: Guidance for assessment, evaluation, and monitoring of RF-EMF exposure.
+    \item \textbf{ITU-T K.100} \cite{itut_k100}: In-situ measurement procedures for base stations.
+    \item \textbf{ITU-T K.113} \cite{itut_k113}: RF-EMF exposure map generation and spatial interpolation.
+    \item \textbf{ITU-T K.61} \cite{itut_k61}: Measurement and numerical prediction for compliance.
+\end{itemize}
+
+\subsection{Document Structure}
+
+Sections~\ref{sec:normative_requirements} through \ref{sec:auxiliary_subsystems} derive hardware requirements from the normative standards and from the operational model of a handheld sensor walked through an enclosed space. Section~\ref{sec:sdr_selection} selects and justifies the SDR transceiver core for each variant. Section~\ref{sec:antenna_subsystem} specifies the triaxial probe and multiplexer architecture. Section~\ref{sec:edge_processing} specifies the edge computing unit. Section~\ref{sec:rf_frontend} covers RF conditioning and protection. Section~\ref{sec:auxiliary_subsystems} addresses timing, geolocation, and power. Section~\ref{sec:bom_matrix} provides a bill of materials and compliance traceability matrix.
+
+% ==============================================================================
+% SECTION 2: NORMATIVE SIZING REQUIREMENTS FOR HARDWARE
+% ==============================================================================
+\section{Normative Sizing Requirements for Hardware}
+\label{sec:normative_requirements}
+
+The hardware architecture must satisfy two competing demands: (a)~normative measurement procedures that prescribe specific averaging times, spatial sampling patterns, and instrument characteristics; and (b)~operational constraints that demand portability, real-time feedback, and rapid area coverage. This section derives the hardware sizing requirements from the applicable standards and from the operational model of a handheld sensor walked through an enclosed space.
+
+\subsection{Measurement Duration Requirements: Screening vs.~Compliance}
+
+ITU-T K.91 \cite{itut_k91} establishes that the ICNIRP averaging time for whole-body exposure in the 100~kHz--300~GHz range is 30~min, and 6~min for local exposure \cite{icnirp2020}. However, the same Recommendation provides an important practical finding:
+
+\begin{quote}
+\textit{``A comparison of the measurements for a 6~min and a 1~min averaging time shows that the difference in results is on a level lower than 1~dB.''}
+\end{quote}
+
+\noindent This result, validated across multiple base station types, implies that a 1-minute measurement captures the dominant statistical behaviour of the field with negligible bias relative to the full 6-minute window. The standard deviation between 1-minute and 6-minute averages remains below 0.4~dB even for variable-traffic sources \cite{itut_k91}.
+
+ITU-T K.113 \cite{itut_k113} confirms this finding from the operational perspective:
+
+\begin{quote}
+\textit{``In most cases, the average power density reading on the instrument tends to be stable after continuous measurement for about 1~min. Therefore, a 1~min measurement time can be used when appropriate as a simple and feasible alternative to one of 6~min according to measurement needs.''}
+\end{quote}
+
+\noindent These results support a two-tier measurement strategy for the proposed sensor:
+
+\begin{enumerate}
+    \item \textbf{Screening mode (1~min per point):} Rapid area scan to identify regions of interest. The operator walks through the enclosed space while the sensor integrates the triaxial E-field readings over a 1-minute window per spatial location. This mode is sufficient for initial compliance screening and for identifying regions where the total exposure ratio (TER) is well below unity.
+    \item \textbf{Compliance mode (6~min per point):} Detailed measurement at identified hotspots. When screening reveals field levels approaching or exceeding the reference levels, the operator pauses at the location and records for the full 6-minute ICNIRP averaging window. This mode provides the compliance-grade result required by ITU-T K.100 \cite{itut_k100} and ANE Resolution 773 \cite{ane_res773_2023}.
+\end{enumerate}
+
+\subsection{Tiered Assessment Flow}
+
+The ITU-T K.113 Appendix II \cite{itut_k113} defines a tiered assessment flow that directly maps to the two-tier strategy above:
+
+\begin{enumerate}
+    \item \textbf{Mobile probe scan:} An instantaneous or short-integration measurement is performed while traversing the area. If the reading is below 14~V/m, the region is deemed compliant and no further assessment is required.
+    \item \textbf{Simplified portable probe assessment:} If the mobile scan exceeds 14~V/m, a portable probe measurement at 1.7~m height for at least 6~min is performed. Readings below 27.7~V/m confirm compliance.
+    \item \textbf{Detailed portable probe evaluation:} Spatial averaging at 3, 6, or 9 points (heights 1.1~m / 1.5~m / 1.7~m) with 6~min integration per point.
+    \item \textbf{Frequency-selective evaluation:} Narrowband analysis when broadband readings exceed limits.
+\end{enumerate}
+
+\noindent The proposed handheld sensor implements tiers~1 and~2 as its primary operational modes. The real-time processing capability (Section~\ref{sec:edge_processing}) enables the operator to observe the TER estimate on a touch-screen display while walking through the space, and to decide whether to pause for a full 6-minute compliance measurement at any given location.
+
+\subsection{Spatial Interpolation and the Kriging Approach}
+
+Full compliance mapping of an enclosed space requires spatial interpolation between measurement points. Mart{\'{\i}}nez-Gonz{\'a}lez et al.\ \cite{martinezgonzalez_2022} demonstrated that ordinary Kriging interpolation can generate accurate indoor exposure maps from a reduced set of measurement points, provided that the spatial sampling strategy is adapted to the field distribution.
+
+The Kriging estimator computes the interpolated electric field at an unmeasured location~$k$ as:
+
+\begin{equation}
+    |E(k)|_{\text{interp}} = \sum_{i=1}^{N} w_i \cdot |E(i)|_{\text{measured}}
+    \label{eq:kriging}
+\end{equation}
+
+\noindent where $w_i$ are the Kriging weights determined by the spatial variogram structure and $\sum w_i = 1$ ensures unbiasedness.
+
+The critical finding for hardware design is the \textbf{Elimination of Less Significant Points (ELSP)} strategy. In ELSP, measurement points with low field intensity are set to zero and excluded from the full measurement protocol, while points in regions of high field intensity are prioritised. The results show:
+
+\begin{itemize}
+    \item Up to 70\% of the regular mesh points can be eliminated with RMSE $< 0.071$~V/m and MAE $< 0.067$~V/m.
+    \item The error growth is approximately linear for elimination rates up to 40\%, then accelerates.
+    \item The Geometrical Elimination of Neighbours (GEN) strategy, which removes points with similar neighbours, produces distorted maps with RMSE $> 3\times$ that of ELSP.
+\end{itemize}
+
+\noindent The ELSP result has direct hardware implications: the sensor must support a \textbf{pre-scan phase} (fast walking, 1-min integration or instantaneous readings) that identifies high-field regions, followed by a \textbf{focused measurement phase} (6-min integration) only at those regions. The operator walks the space once to identify hotspots, then returns to those locations for compliance-grade measurements. This reduces total measurement time by up to 70\% compared to a uniform grid approach \cite{martinezgonzalez_2022}.
+
+\subsection{Handheld Form Factor and User Interaction Requirements}
+
+The operational model requires that a single operator carries the sensor through the enclosed space while observing real-time field estimates. This imposes the following hardware constraints:
+
+\begin{itemize}
+    \item \textbf{Weight and ergonomics:} The complete sensor (SDR core, probe, processing unit, battery, display) must be operable with one hand while walking. Total mass shall not exceed 2.5~kg for sustained 30-minute measurement campaigns.
+    \item \textbf{Touch-screen display:} A minimum 5-inch LCD touch screen is required for: (a)~real-time TER display during screening mode, (b)~spatial position indicator overlaid on a floor plan, (c)~measurement start/stop control, and (d)~mode selection (screening vs.~compliance). The display must be sunlight-readable for indoor environments with windows.
+    \item \textbf{One-hand operation:} The probe is held at 1.5--1.7~m height (per ITU-T K.113 \cite{itut_k113} and K.91 \cite{itut_k91}) while the operator interacts with the touch screen with the other hand.
+    \item \textbf{Safety:} The sensor must not expose the operator to RF fields from its own transmitter. The SDR receiver is passive (receive-only), and the RF switch SP3T (Section~\ref{sec:antenna_subsystem}) does not generate emissions.
+\end{itemize}
+
+\subsection{RF Switch Architecture: SP3T Multiplexer}
+
+The triaxial probe subsystem (Section~\ref{sec:antenna_subsystem}) uses a single SDR receiver channel connected to three orthogonal antenna elements through an SP3T (Single-Pole, Triple-Throw) RF switch. The switch cycling rate and insertion loss are hardware sizing requirements:
+
+\begin{itemize}
+    \item \textbf{Switching rate:} The SP3T must complete a full $x$--$y$--$z$ cycle within $\Delta t_{sw} \ll 60$~s (screening mode) or $\Delta t_{sw} \ll 360$~s (compliance mode). A 1~s cycle time yields a temporal offset of 0.28\% of the 6-minute window---negligible compared to probe isotropy error.
+    \item \textbf{Insertion loss:} $< 0.5$~dB across 700~MHz--3.5~GHz to preserve the $\pm 1$~dB isotropic response budget.
+    \item \textbf{Isolation:} $> 40$~dB between ports to prevent cross-axis leakage during sequential sampling.
+    \item \textbf{Operating range:} 100~kHz--6~GHz to cover the full probe bandwidth (Narda EF0691 specification).
+\end{itemize}
+
+\noindent The SP3T architecture is normatively admissible per ITU-T K.100 \cite{itut_k100}, which explicitly permits single-axis sequential measurement with post-processing to reconstruct the total field strength.
+
+\subsection{Edge AI and Real-Time Processing}
+
+The real-time computation of TER from triaxial field samples, Kriging interpolation for spatial mapping, and the touch-screen user interface require a processing unit with sufficient GPU and CPU capability in a handheld form factor. The NVIDIA Jetson Orin Nano \cite{jetson_orin} is selected for the following justification:
+
+\begin{itemize}
+    \item \textbf{Compute capability:} 40~TOPS (INT8) enables real-time Kriging interpolation on a $50 \times 50$ grid within $< 100$~ms, supporting interactive map generation during the screening walk.
+    \item \textbf{GPU-accelerated DSP:} The 1024-core Ampere GPU handles FFT-based spectral analysis for frequency-selective mode (Tier~4 of the K.113 assessment flow).
+    \item \textbf{Power envelope:} 7--15~W TDP fits within a battery-powered handheld unit with $> 2$~h continuous operation.
+    \item \textbf{Interface:} MIPI-DSI for the touch-screen display, USB 3.2 for SDR data acquisition, GPIO for SP3T switch control.
+    \item \textbf{AI inference:} The onboard NPU supports lightweight neural-network models for anomaly detection in the field distribution, enabling automatic identification of hotspots that exceed the ELSP threshold during the screening walk.
+\end{itemize}
+
+\noindent Alternative platforms (Raspberry Pi 5, Intel NUC) lack the GPU compute density required for real-time Kriging and spectral analysis simultaneously. The Jetson Orin Nano provides the necessary performance within the power and weight constraints of a handheld instrument.
+
+\subsection{Summary of Hardware Sizing Requirements}
+
+Table~\ref{tab:section2_requirements} consolidates the normative and operational requirements derived in this section.
+
+\begin{table}[ht]
+\centering
+\caption{Hardware sizing requirements derived from normative standards and operational constraints.}
+\label{tab:section2_requirements}
+\small
+\begin{tabular}{L{4.2cm} L{5.5cm} L{4.5cm}}
+\toprule
+\textbf{Requirement} & \textbf{Source} & \textbf{Target Value} \\
+\midrule
+Screening integration time & K.91 \S 7.2.3, K.113 \S IV.5 & 1~min per point \\
+Compliance integration time & ICNIRP 2020, K.100 & 6~min per point \\
+Probe isotropy & K.61, K.100 & $< 2$~dB ($< 900$~MHz), $< 3$~dB (0.9--3~GHz) \\
+SP3T insertion loss & K.100 (sequential permitted) & $< 0.5$~dB (700~MHz--3.5~GHz) \\
+SP3T port isolation & System requirement & $> 40$~dB \\
+Probe height & K.113 \S IV.3, K.91 & 1.5--1.7~m above ground \\
+ELSP point reduction & Mart{\'{\i}}nez-Gonz{\'a}lez 2022 & Up to 70\% mesh reduction \\
+Processing unit & Edge AI + Kriging + UI & Jetson Orin Nano (40~TOPS) \\
+Display & Handheld UI requirement & $\geq 5$-inch LCD touch screen \\
+Total mass & Ergonomic constraint & $\leq 2.5$~kg \\
+Battery life & Field campaign requirement & $> 2$~h continuous \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% ==============================================================================
+% SECTION 3: SDR TRANSCEIVER CORE SELECTION & JUSTIFICATION
+% ==============================================================================
+\section{SDR Transceiver Core Selection and Evaluation}
+\label{sec:sdr_selection}
+
+This section evaluates SDR transceiver candidates for the three sensor variants and selects the optimal platform for each band.
+
+\subsection{SDR Platform Requirements}
+
+The SDR transceiver must satisfy the following requirements derived from Section~\ref{sec:normative_requirements}:
+
+\begin{itemize}
+    \item \textbf{Frequency coverage:} Tune to the target band with sufficient bandwidth for the measurement channel.
+    \item \textbf{ADC resolution:} Minimum 12-bit ADC to achieve $> 70$~dB dynamic range within a single measurement band.
+    \item \textbf{Sample rate:} $\geq 20$~MS/s to support real-time FFT for spectral analysis.
+    \item \textbf{Interface:} USB 3.0 or higher for data transfer to the edge processing unit.
+    \item \textbf{Gain control:} Programmable gain amplifier (PGA) with $\geq 40$~dB range for automatic level control.
+    \item \textbf{Form factor:} Compact module ($< 100 \times 60$~mm) suitable for handheld integration.
+\end{itemize}
+
+\subsection{Candidate Comparison Matrix}
+
+Table~\ref{tab:sdr_candidates} compares the candidate SDR platforms across the key selection criteria.
+
+\begin{table}[ht]
+\centering
+\caption{SDR transceiver candidate comparison for band-specific RNI sensors.}
+\label{tab:sdr_candidates}
+\small
+\begin{tabular}{L{2.8cm} C{3.0cm} C{3.0cm} C{3.0cm}}
+\toprule
+\textbf{Parameter} & \textbf{RTL-SDR} & \textbf{HackRF Pro} & \textbf{USRP B200mini-i} \\
+\midrule
+Frequency range & 24--1766~MHz & 1--6000~MHz & 70--6000~MHz \\
+ADC resolution & 8-bit & 12-bit & 12-bit \\
+Max sample rate & 2.4~MS/s & 20~MS/s & 56~MS/s \\
+Dynamic range & 48~dB & 72~dB & 72~dB \\
+Interface & USB 2.0 & USB 3.0 & USB 3.0 \\
+Full-duplex & Half & Half & Full \\
+Open source HW & Yes & Yes & Partial \\
+Approx. cost & \$30 & \$500 & \$1300 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent The three selected platforms represent a cost-performance gradient: the RTL-SDR at $\approx \$30$ provides sufficient performance for Sub-1~GHz IoT protocols (LoRaWAN, Z-Wave, Zigbee Sub-GHz) where signal levels are typically low and the 8-bit ADC dynamic range (48~dB) is adequate for the narrowband signals present. The HackRF Pro at $\approx \$500$ provides 12-bit ADC (72~dB dynamic range) and wider bandwidth for the congested 2.4~GHz ISM band where multiple protocols (Wi-Fi, Bluetooth, Zigbee, Thread, WirelessHART, ISA100.11a) coexist. The USRP B200mini-i at $\approx \$1300$ provides 56~MS/s sample rate and full-duplex capability required for the 5/6~GHz band with its wideband Wi-Fi 6E/7 channels and beamforming signals.
+
+\subsection{Sensor~A: Sub-1~GHz (700--960~MHz)}
+
+\subsubsection{Band Justification}
+
+The Sub-1~GHz band in Colombia covers the ISM band 902--928~MHz, which hosts LoRaWAN (US915/AU915), Z-Wave (908.42~MHz / 916~MHz), and Zigbee Sub-GHz (915~MHz). These protocols serve deep-building penetration applications: energy/water sub-metering, smart building monitoring, residential security, and smart locks. In enclosed environments with IoT deployments, Sub-1~GHz sources are typically low-power (10--100~mW EIRP) but persistent. The measurement must capture the aggregate field from multiple low-power transmitters operating continuously. The narrowband nature of these protocols (LoRaWAN: 125--500~kHz bandwidth, Z-Wave: 100~kHz) means that the 2.4~MS/s sample rate of the RTL-SDR is sufficient for broadband integrated measurement.
+
+\subsubsection{SDR Selection: RTL-SDR}
+
+The RTL-SDR is selected for Sensor~A based on:
+
+\begin{itemize}
+    \item \textbf{Frequency match:} 24--1766~MHz covers the 902--928~MHz target band with margin.
+    \item \textbf{Cost:} $\approx \$30$, making it the lowest-cost variant and enabling deployment of multiple sensor units for spatial mapping.
+    \item \textbf{Sufficiency for Sub-1~GHz:} The 8-bit ADC (48~dB dynamic range) is adequate because Sub-1~GHz IoT protocols (LoRaWAN, Z-Wave, Zigbee Sub-GHz) are narrowband and low-power. The dynamic range requirement is relaxed compared to the 2.4~GHz band where multiple high-power sources coexist.
+    \item \textbf{Open-source ecosystem:} Extensive community support for RTL-SDR-based measurement applications.
+    \item \textbf{Limitation:} 2.4~MS/s maximum sample rate. For broadband integrated measurement, this is sufficient. For frequency-selective analysis, the limited bandwidth may require multiple tuning steps.
+\end{itemize}
+
+\subsubsection{Antenna Architecture: Discrete Triaxial Array}
+
+At Sub-1~GHz wavelengths ($\lambda/2 \approx 16$~cm at 915~MHz), three individual dipole or monopole antennas can be physically separated by $\geq \lambda/4$ while remaining within a compact form factor:
+
+\begin{itemize}
+    \item \textbf{Antennas:} 3$\times$ off-the-shelf wideband antennas covering 902--928~MHz, each with an SMA connector.
+    \item \textbf{Mounting:} 3D-printed orthogonal base (PLA/PETG) that positions the three antennas along mutually perpendicular axes ($x$, $y$, $z$).
+    \item \textbf{Switching:} SP3T or SP4T RF switch cycles through the three axes. SP4T provides a spare port for calibration reference.
+    \item \textbf{Cabling:} Three short SMA cables ($< 15$~cm) from antennas to switch input, minimising insertion loss.
+    \item \textbf{Isolation:} Physical separation ($\geq \lambda/4 \approx 8.2$~cm at 915~MHz) provides inherent inter-axis isolation $> 20$~dB, supplemented by the SP3T/SP4T switch isolation ($> 40$~dB).
+\end{itemize}
+
+\noindent The discrete array approach is cost-effective at Sub-1~GHz because antenna element sizes are manageable. The 3D-printed base allows rapid prototyping and field-replaceable antenna elements.
+
+\subsection{Sensor~B: 2.4~GHz ISM (2.400--2.500~GHz)}
+
+\subsubsection{Band Justification}
+
+The 2.4~GHz ISM band (2.400--2.4835~GHz) is the most congested frequency band in enclosed environments in Colombia, occupied by: Wi-Fi 802.11b/g/n/ax/be (2.400--2.4835~GHz), Bluetooth LE/Mesh (2.402--2.480~GHz), Zigbee/Thread (2.405--2.480~GHz), WirelessHART and ISA100.11a (2.4~GHz industrial IoT), and microwave ovens (2.450~GHz). Indoor exposure is dominated by Wi-Fi access points (typically 100~mW EIRP) and client devices (10--100~mW). The aggregate field from multiple simultaneous protocols---each with different modulation schemes and duty cycles---requires accurate broadband measurement with sufficient dynamic range to distinguish individual contributions.
+
+\subsubsection{SDR Selection: HackRF Pro}
+
+The HackRF Pro is selected for Sensor~B based on:
+
+\begin{itemize}
+    \item \textbf{Frequency match:} 1--6000~MHz covers the 2.4~GHz band with margin.
+    \item \textbf{ADC resolution:} 12-bit ADC (72~dB dynamic range) provides the dynamic range needed to measure the aggregate field from multiple coexisting protocols (Wi-Fi, Bluetooth, Zigbee, Thread, WirelessHART, ISA100.11a) without ADC saturation.
+    \item \textbf{Sample rate:} 20~MS/s supports wideband FFT analysis across the 2.4~GHz ISM band (83.5~MHz bandwidth).
+    \item \textbf{Cost:} $\approx \$500$, approximately 40\% of the USRP B200mini-i, while providing sufficient performance for the 2.4~GHz band.
+    \item \textbf{Open-source hardware:} Facilitates custom firmware modifications if required for synchronised sampling.
+    \item \textbf{Limitation:} Half-duplex only. For receive-only RNI measurement, this is not a constraint.
+\end{itemize}
+
+\subsubsection{Antenna Architecture: Passive Triaxial Antenna}
+
+At 2.4~GHz ($\lambda/4 \approx 3.1$~cm), a passive triaxial antenna with three SMA outputs provides the optimal balance between isotropy and form factor:
+
+\begin{itemize}
+    \item \textbf{Antenna:} Commercial passive triaxial antenna with three orthogonal elements in a single radome, each output via an SMA connector.
+    \item \textbf{Isotropic response:} $\pm 1$~dB across 2.400--2.500~GHz, matching the Narda EF0691 performance benchmark.
+    \item \textbf{Switching:} SP3T or SP4T RF switch selects the active axis.
+    \item \textbf{Advantage:} The three elements share a common ground plane and radome, ensuring consistent element spacing and mutual coupling.
+    \item \textbf{Height:} Operated at 1.5--1.7~m above floor level per ITU-T K.113 \cite{itut_k113}.
+\end{itemize}
+
+\noindent The passive triaxial antenna with separate SMA outputs provides flexibility for future upgrades while maintaining the SP3T/SP4T switching architecture consistent with Sensor~A.
+
+\subsection{Sensor~C: 5/6~GHz (5.150--7.125~GHz)}
+
+\subsubsection{Band Justification}
+
+The 5/6~GHz band covers Industrial Wi-Fi 5/6 (5.150--5.850~GHz UNII) and Wi-Fi 6E/7 (5.925--7.125~GHz unlicensed ANE allocation). Indoor 5/6~GHz exposure is dominated by Wi-Fi 6E access points (200~mW EIRP) with beamforming, creating highly directional and time-varying field patterns. The measurement system must handle rapid signal variations and provide accurate broadband integration. The 160~MHz channel bandwidth of Wi-Fi 6E/7 requires the 56~MS/s sample rate of the USRP B200mini-i for adequate spectral coverage.
+
+\subsubsection{SDR Selection: USRP B200mini-i}
+
+The USRP B200mini-i is selected for Sensor~C based on:
+
+\begin{itemize}
+    \item \textbf{Frequency coverage:} 70--6000~MHz. For full 6~GHz coverage including Wi-Fi 6E (5.925--7.125~GHz), an external mixer or the USRP X310 can be considered for future variants.
+    \item \textbf{ADC resolution:} 12-bit ADC (72~dB dynamic range) handles the high dynamic range of 5/6~GHz environments with beamforming access points.
+    \item \textbf{Sample rate:} 56~MS/s supports wideband FFT across the 160~MHz channel bandwidth of Wi-Fi 6E/7.
+    \item \textbf{Full-duplex:} Enables self-calibration routines with simultaneous transmit/receive.
+    \item \textbf{Interface:} USB 3.0 provides sufficient bandwidth for continuous streaming at 56~MS/s.
+\end{itemize}
+
+\subsubsection{Antenna Architecture: Integrated MUX Triaxial Antenna}
+
+At 5/6~GHz ($\lambda/4 \approx 1.2$~cm), antenna elements are small enough to integrate the RF switch inside the antenna radome, eliminating external cabling:
+
+\begin{itemize}
+    \item \textbf{Antenna:} Triaxial antenna with integrated RF multiplexer. Three orthogonal elements feed an internal SP3T switch, with a single SMA output to the SDR.
+    \item \textbf{Advantage:} Single SMA cable from antenna to SDR eliminates cable loss and phase instability. At 5~GHz, a 15~cm SMA cable introduces $\approx 0.3$~dB loss---significant in the uncertainty budget.
+    \item \textbf{Switch control:} GPIO lines from the Jetson Orin Nano control the internal MUX via a thin control cable.
+    \item \textbf{Isotropic response:} $\pm 1.5$~dB across 5.150--5.850~GHz. The slightly relaxed isotropy spec is acceptable because the 5/6~GHz band has fewer multipath components in enclosed spaces.
+    \item \textbf{Form factor:} The integrated MUX reduces the total antenna-plus-switch assembly to a single compact unit ($\approx 80 \times 80 \times 40$~mm).
+\end{itemize}
+
+\noindent The integrated MUX architecture is only feasible at 5/6~GHz where the antenna elements are small. At lower frequencies, the discrete array (Sensor~A) or passive triaxial (Sensor~B) architectures remain the practical choice.
+
+% ==============================================================================
+% SECTION 4: ANTENNA AND ISOTROPIC E-FIELD PROBE SUBSYSTEM
+% ==============================================================================
+\section{Antenna and Isotropic E-Field Sensor Probe Subsystem}
+\label{sec:antenna_subsystem}
+
+\subsection{Isotropy and Polarization Requirements}
+
+Human exposure evaluation in enclosed environments with high IoT device density requires polarization-independent measurement of the electric field. The ITU-T Recommendations mandate that the total field strength be obtained from three mutually orthogonal components \cite{itut_k100, itut_k61, itut_k91, itut_k113}:
+
+\begin{equation}
+    E_{total} = \sqrt{E_x^2 + E_y^2 + E_z^2}
+    \label{eq:isotropic_total}
+\end{equation}
+
+\noindent where $E_x$, $E_y$, and $E_z$ represent the electric field vector components along three mutually orthogonal axes. Per ITU-T K.61 \cite{itut_k61}, ``the isotropic response is usually achieved by a triaxial antenna system, where the three axes are arranged to be mutually orthogonal.'' The probe isotropy shall meet the following frequency-dependent limits per ITU-T K.100 \cite{itut_k100}:
+
+\begin{itemize}
+    \item $< 2$~dB for frequencies below 900~MHz,
+    \item $< 3$~dB for frequencies from 900~MHz to 3~GHz,
+    \item $< 5$~dB for frequencies above 3~GHz.
+\end{itemize}
+
+\noindent The normative language used across these Recommendations carries precise weight. ITU-T K.113 \cite{itut_k113} states that ``the reading of the three axes of the broadband isotropic field probe should \textbf{preferably} be simultaneous.'' Within the ITU-T vocabulary, ``shall'' denotes a mandatory requirement, ``should'' denotes a recommendation to be followed unless deviation is specifically justified, and ``preferably'' is advisory---weaker than ``should.'' Therefore, simultaneous three-axis reading is not a mandatory condition; sequential axis reading via a multiplexer is normatively admissible. This is explicitly confirmed by ITU-T K.100 \cite{itut_k100}: ``Single-axis (e.g., dipole) and directional measurement antennas are \textbf{permitted} provided that the measurements are post processed to obtain the total RF field strength (equivalent to a measurement with an isotropic probe or measurement antenna).'' The same Recommendation further states that a single-axis probe ``can be used by positioning the probe in three orthogonal directions and summing the individual contributions.''
+
+In indoor environments with high IoT device density, electromagnetic fields arrive from multiple directions and polarizations due to reflections, scattering, and the spatial distribution of transmitters \cite{itut_k91}. An isotropic triaxial probe ensures that all field components are captured regardless of incident polarization, which is essential for compliance assessment against ICNIRP reference levels \cite{icnirp2020} and ANE Resolution 773 \cite{ane_res773_2023}.
+
+\subsection{Sensor Probe Design and Multiplexer Architecture}
+
+The proposed sensor uses a single SDR receiver connected to a triaxial probe through an RF multiplexer that cycles through the three orthogonal axes ($x$, $y$, $z$). This architecture is justified by the time-averaging requirements of the exposure standards. ICNIRP 2020 \cite{icnirp2020} mandates a 6-minute (360~s) averaging time for reference levels in the 100~kHz--10~GHz range. If the multiplexer switches between axes in $\Delta t_{sw} \ll 360$~s, the three sequential readings approximate a simultaneous measurement. For a switching cycle of $\Delta t_{sw} \approx 1$~s, the temporal offset between axis readings represents $0.28\%$ of the averaging window---negligible compared to the $\pm 1$~dB isotropy error of a commercial probe \cite{martinezgonzalez_2022}. ITU-T K.91 \cite{itut_k91} further notes that a comparison of 6-minute and 1-minute averaging times shows differences below 1~dB, confirming that the averaging window, not the axis switching sequence, dominates the measurement uncertainty.
+
+For frequency-selective (narrowband) measurements, the antenna factor (AF) is defined as \cite{itut_k61}:
+
+\begin{equation}
+    AF = \frac{E_{ref}}{V} \quad [\text{m}^{-1}]
+    \label{eq:antenna_factor}
+\end{equation}
+
+\noindent where $E_{ref}$~[V/m] is the electric field strength at the probe and $V$~[V] is the voltage measured by the SDR receiver. The AF shall be known with an expanded uncertainty (95\% confidence) of less than 2~dB for each frequency of interest \cite{itut_k61}. For broadband measurements, the calibration factor (CF) is \cite{itut_k61}:
+
+\begin{equation}
+    CF = \frac{E_{ref}}{E_{meas}}
+    \label{eq:calibration_factor}
+\end{equation}
+
+\noindent where $E_{ref}$ is the expected electric reference field strength and $E_{meas}$ is the value read on the receiver. The expanded measurement uncertainty shall account for the influence quantities per ITU-T K.100 \cite{itut_k100} and IEC 62232: probe calibration (normal, $k=1.96$), frequency response, isotropy, temperature response, linearity deviation, and mutual coupling (all rectangular, divisor $\sqrt{3}$). The combined expanded uncertainty $U = k \cdot u_c$ shall satisfy $U \le 3$~dB \cite{itut_k91, itut_k61}.
+
+A reference implementation was demonstrated by Mart{\'{\i}}nez-Gonz{\'a}lez et al.~\cite{martinezgonzalez_2022}, who employed a Narda NBM-550 broadband field meter with an isotropic Narda EF0691 E-field probe (100~kHz--6~GHz, $\pm 1$~dB isotropic response, 0.2--650~V/m range) following the EN 50413:2019 procedure with 6-minute time averaging per location. The Narda EF0691 is itself a single-channel receiver with internal axis switching---not three simultaneous ADCs---validating the multiplexer architecture for compliance-grade indoor exposure mapping.
+
+\section{Edge Computing and Processing Unit Selection}
+\label{sec:edge_processing}
+
+The edge computing unit performs real-time computation of total exposure ratio (TER), Kriging interpolation for spatial mapping, spectral analysis for frequency-selective mode, and the touch-screen user interface. This section evaluates processing platforms and selects the optimal unit for the handheld sensor.
+
+\subsection{Processing Architecture Comparison}
+
+Table~\ref{tab:edge_candidates} compares candidate edge computing platforms.
+
+\begin{table}[ht]
+\centering
+\caption{Edge computing platform comparison for RNI sensor processing.}
+\label{tab:edge_candidates}
+\small
+\begin{tabular}{L{2.5cm} C{2.0cm} C{2.0cm} C{2.0cm} C{2.0cm}}
+\toprule
+\textbf{Parameter} & \textbf{Raspberry Pi 5} & \textbf{Jetson Orin Nano} & \textbf{Jetson Orin NX} & \textbf{Intel NUC} \\
+\midrule
+CPU cores & 4$\times$ A76 & 6$\times$ A78AE & 8$\times$ A78AE & 4$\times$ i7 \\
+GPU cores & VideoCore VII & 1024$\times$ Ampere & 1024$\times$ Ampere & Iris Xe \\
+AI compute & N/A & 40 TOPS & 100 TOPS & N/A \\
+RAM & 8~GB & 8~GB & 16~GB & 16--32~GB \\
+TDP & 10~W & 7--15~W & 10--25~W & 15--28~W \\
+Display & MIPI-DSI & MIPI-DSI & MIPI-DSI & HDMI \\
+USB & 2$\times$ USB 3.0 & 1$\times$ USB 3.2 & 1$\times$ USB 3.2 & 4$\times$ USB 3.0 \\
+Approx. cost & \$80 & \$250 & \$600 & \$400 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent The Raspberry Pi 5 lacks a dedicated GPU for parallel computation, making real-time Kriging interpolation on a $50 \times 50$ grid impractical ($> 500$~ms per frame). The Intel NUC provides general-purpose CPU performance but lacks the GPU compute density for simultaneous FFT and Kriging. The Jetson Orin NX exceeds the compute requirements at higher cost and TDP. The Jetson Orin Nano provides the optimal balance.
+
+\subsection{Edge Unit Selection: NVIDIA Jetson Orin Nano}
+
+The NVIDIA Jetson Orin Nano is selected based on:
+
+\begin{itemize}
+    \item \textbf{Compute capability:} 40~TOPS (INT8) enables real-time Kriging interpolation on a $50 \times 50$ grid within $< 100$~ms, supporting interactive map generation during the screening walk.
+    \item \textbf{GPU-accelerated DSP:} The 1024-core Ampere GPU handles FFT-based spectral analysis for frequency-selective mode (Tier~4 of the K.113 assessment flow).
+    \item \textbf{Power envelope:} 7--15~W TDP fits within a battery-powered handheld unit with $> 2$~h continuous operation.
+    \item \textbf{Interface:} MIPI-DSI for the touch-screen display, USB 3.2 for SDR data acquisition, GPIO for SP3T switch control.
+    \item \textbf{AI inference:} The onboard NPU supports lightweight neural-network models for anomaly detection in the field distribution, enabling automatic identification of hotspots that exceed the ELSP threshold during the screening walk.
+\end{itemize}
+
+\subsection{Software Architecture}
+
+The edge processing software stack comprises:
+
+\begin{itemize}
+    \item \textbf{SDR driver layer:} UHD (USRP Hardware Driver) for USRP B200mini-i; libhackrf for HackRF Pro; librtlsdr for RTL-SDR. All provide standardised IQ sample streaming.
+    \item \textbf{Signal processing:} GPU-accelerated FFT (cuFFT) for spectral analysis, triaxial field computation (Eq.~\ref{eq:isotropic_total}), and TER calculation against ICNIRP reference levels.
+    \item \textbf{Spatial processing:} Kriging interpolation (Eq.~\ref{eq:kriging}) using GPU-optimised matrix operations for real-time exposure map generation.
+    \item \textbf{User interface:} Touch-screen application displaying real-time TER, field strength per axis, measurement mode selector, and spatial exposure map overlay.
+    \item \textbf{Data logging:} Timestamped CSV/JSON export of all measurement points with GPS coordinates (Section~\ref{sec:auxiliary_subsystems}).
+\end{itemize}
+
+\noindent Alternative platforms (Raspberry Pi 5, Intel NUC) lack the GPU compute density required for real-time Kriging and spectral analysis simultaneously. The Jetson Orin Nano provides the necessary performance within the power and weight constraints of a handheld instrument.
+
+\section{RF Front-End Conditioning and Circuit Protection}
+\label{sec:rf_frontend}
+
+The RF front-end conditions the signal between the antenna output and the SDR ADC input. This section specifies the analog signal chain, filtering, and protection circuits required for each sensor variant.
+
+\subsection{Front-End Signal Conditioning Stages}
+
+The RF front-end comprises three stages:
+
+\begin{enumerate}
+    \item \textbf{Band-select pre-filter:} Analog bandpass filter that suppresses out-of-band interferers before amplification, preventing ADC saturation and improving effective dynamic range.
+    \item \textbf{Low-noise amplifier (LNA):} Optional gain stage to boost weak signals above the SDR noise floor. Bypassed when strong signals are present (automatic gain control).
+    \item \textbf{DC block and ESD protection:} Capacitive DC blocking and TVS diodes to protect the SDR input from electrostatic discharge and DC offsets.
+\end{enumerate}
+
+\subsection{Band-Select Pre-Filter Specifications}
+
+The analog pre-filter is critical for each sensor variant. Table~\ref{tab:filters} specifies the filter requirements.
+
+\begin{table}[ht]
+\centering
+\caption{Band-select pre-filter specifications per sensor variant.}
+\label{tab:filters}
+\small
+\begin{tabular}{L{2.0cm} C{2.5cm} C{2.5cm} C{3.5cm}}
+\toprule
+\textbf{Variant} & \textbf{Passband} & \textbf{Rejection} & \textbf{Type} \\
+\midrule
+Sensor~A & 698--960~MHz & $> 40$~dB at $f < 500$~MHz and $f > 1100$~MHz & Ceramic BPF \\
+Sensor~B & 2.400--2.500~GHz & $> 40$~dB at $f < 2.3$~GHz and $f > 2.6$~GHz & Ceramic BPF \\
+Sensor~C & 5.150--5.850~GHz & $> 35$~dB at $f < 5.0$~GHz and $f > 6.0$~GHz & Waveguide BPF \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent The pre-filter insertion loss shall be $< 1.5$~dB in the passband to preserve the overall system noise figure. For Sensor~C, the waveguide filter provides steeper roll-off at the cost of slightly higher insertion loss ($\approx 2$~dB), acceptable because the 5/6~GHz band typically has stronger field levels.
+
+\subsection{Automatic Gain Control (AGC) Strategy}
+
+The SDR's internal PGA is configured with the following AGC strategy:
+
+\begin{itemize}
+    \item \textbf{Screening mode:} Fast AGC with 10~ms attack time to track rapid field variations during operator movement. Gain range: 0--40~dB.
+    \item \textbf{Compliance mode:} Fixed gain setting after initial level detection. Gain is locked for the 6-minute integration window to ensure measurement consistency per ITU-T K.91 \cite{itut_k91}.
+\end{itemize}
+
+\subsection{Circuit Protection}
+
+The SDR input is protected against:
+
+\begin{itemize}
+    \item \textbf{ESD:} TVS diodes (low capacitance, $< 0.5$~pF) rated for $> 8$~kV contact discharge per IEC 61000-4-2.
+    \item \textbf{Overvoltage:} Input power limiter ($< +10$~dBm sustained) to prevent ADC damage from nearby high-power transmitters.
+    \item \textbf{DC offset:} Capacitive DC block ($> 10$~kHz corner frequency) to reject DC and low-frequency interference.
+\end{itemize}
+
+\noindent The protection network shall add $< 0.5$~dB insertion loss in the passband and shall not degrade the system noise figure by more than 0.3~dB.
+
+\section{Timing, Geolocation, and Power Subsystem}
+\label{sec:auxiliary_subsystems}
+
+This section specifies the auxiliary subsystems required for timestamped, geolocated measurements and portable power.
+
+\subsection{High-Stability Clocking (Frequency Accuracy)}
+
+The SDR receiver requires a stable reference clock for accurate frequency tuning and sample rate generation. The frequency accuracy shall meet the following requirements:
+
+\begin{itemize}
+    \item \textbf{Frequency tolerance:} $< \pm 1$~ppm across the operating temperature range ($0$--$45\,^{\circ}$C) to ensure the measurement channel bandwidth is centred on the target frequency.
+    \item \textbf{Phase noise:} $< -120$~dBc/Hz at 10~kHz offset for the local oscillator, to avoid contaminating the measured signal with oscillator phase noise.
+    \item \textbf{Reference source:} TCXO (Temperature-Compensated Crystal Oscillator) with $< \pm 0.5$~ppm stability. For future variants requiring higher accuracy, a GPS-disciplined oscillator (GPSDO) can be integrated.
+\end{itemize}
+
+\subsection{GNSS Geolocation for Spatial Exposure Mapping}
+
+Each measurement point must be geolocated for spatial exposure map generation. The geolocation subsystem provides:
+
+\begin{itemize}
+    \item \textbf{GNSS receiver:} Multi-constellation (GPS + GLONASS + Galileo) with SBAS augmentation for indoor positioning accuracy of $\approx 2$--5~m (sufficient for room-level spatial mapping).
+    \item \textbf{Antenna:} Active patch antenna with LNA, mounted on the sensor housing exterior for sky visibility.
+    \item \textbf{Interface:} UART at 9600~baud to the Jetson Orin Nano, NMEA 0183 protocol.
+    \item \textbf{Indoor fallback:} In GNSS-denied environments (deep indoor), the geolocation is estimated from the operator's walking trajectory using inertial measurement unit (IMU) data or manual floor-plan alignment via the touch screen.
+\end{itemize}
+
+\subsection{Power Supply and Battery Management System (BMS)}
+
+The sensor must operate autonomously for field campaigns of $> 2$~h. The power subsystem comprises:
+
+\begin{itemize}
+    \item \textbf{Battery:} Lithium-polymer (LiPo) 4S (14.8~V nominal), 5000~mAh capacity. Energy: 74~Wh. At 15~W average system load, this provides $\approx 5$~h runtime (2.5$\times$ margin over the 2~h requirement).
+    \item \textbf{BMS:} 4S BMS with over-charge, over-discharge, over-current, and short-circuit protection. Cell balancing ensures uniform aging.
+    \item \textbf{DC-DC converters:} 
+        \begin{itemize}
+            \item 5~V / 3~A for Jetson Orin Nano (main rail).
+            \item 3.3~V / 1~A for SDR transceiver and analog front-end.
+            \item 1.8~V / 0.5~A for digital logic and display.
+        \end{itemize}
+    \item \textbf{Charging:} USB-C PD (20~V / 3~A) input for field charging. Full charge time $< 2$~h.
+    \item \textbf{Fuel gauge:} I2C-connected fuel gauge IC reporting remaining capacity and estimated runtime to the touch-screen UI.
+\end{itemize}
+
+\subsection{Thermal Management}
+
+The Jetson Orin Nano (15~W TDP) and SDR transceiver generate significant heat in a handheld enclosure:
+
+\begin{itemize}
+    \item \textbf{Passive heatsink:} Aluminium heatsink with thermal interface material (TIM) bonded to the enclosure rear panel.
+    \item \textbf{Thermal throttling:} If junction temperature exceeds $85\,^{\circ}$C, the processing unit reduces GPU clock frequency by 20\%, maintaining operation at reduced performance.
+    \item \textbf{Enclosure ventilation:} Convective cooling slots in the enclosure bottom, oriented to prevent water ingress (IP54 equivalent).
+\end{itemize}
+
+\section{Hardware Bill of Materials (BOM) and Compliance Matrix}
+\label{sec:bom_matrix}
+
+This section provides the bill of materials for each sensor variant with functional descriptions. Exact part numbers are left as placeholders pending procurement validation.
+
+\subsection{Sensor~A Bill of Materials: Sub-1~GHz}
+
+\begin{table}[ht]
+\centering
+\caption{Sensor~A BOM: Sub-1~GHz variant (RTL-SDR).}
+\label{tab:bom_sensorA}
+\small
+\begin{tabular}{L{1.0cm} L{5.0cm} L{4.0cm} C{2.0cm}}
+\toprule
+\textbf{\#} & \textbf{Description} & \textbf{Placeholder Part} & \textbf{Qty} \\
+\midrule
+A1 & SDR transceiver, 1--6000~MHz, 12-bit ADC, USB 3.0 & [HackRF Pro] & 1 \\
+A2 & Analog bandpass filter, 698--960~MHz, SMA & [BPF Sub-1GHz] & 1 \\
+A3 & SP4T RF switch, DC--3~GHz, SMA, GPIO control & [SP4T Switch] & 1 \\
+A4 & Wideband antenna, 700--960~MHz, SMA, omnidirectional & [Antenna Sub-1GHz] & 3 \\
+A5 & 3D-printed orthogonal antenna base, PLA/PETG & [3D Print STL] & 1 \\
+A6 & SMA cables, 15~cm, low-loss, straight & [SMA Cable 15cm] & 4 \\
+A7 & DC block, SMA, $> 10$~kHz & [DC Block] & 1 \\
+A8 & TVS diode ESD protection, SMA, $< 0.5$~pF & [ESD Protector] & 1 \\
+A9 & TCXO reference oscillator, $< \pm 0.5$~ppm & [TCXO Module] & 1 \\
+A10 & Edge computing module, 40~TOPS, GPU, 8~GB RAM & [Jetson Orin Nano] & 1 \\
+A11 & Touch-screen display, 5~inch, MIPI-DSI, sunlight-readable & [LCD Touch 5in] & 1 \\
+A12 & GNSS receiver, multi-constellation, UART & [GNSS Module] & 1 \\
+A13 & LiPo battery, 4S, 5000~mAh, with BMS & [LiPo 4S 5000mAh] & 1 \\
+A14 & DC-DC converter, 5~V/3~A, 3.3~V/1~A, 1.8~V/0.5~A & [DCDC Regulator] & 1 \\
+A15 & Enclosure, handheld, aluminium heatsink, IP54 & [Enclosure Design] & 1 \\
+A16 & USB 3.0 cable, 30~cm, Shielded & [USB3 Cable] & 1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Sensor~B Bill of Materials: 2.4~GHz}
+
+\begin{table}[ht]
+\centering
+\caption{Sensor~B BOM: 2.4~GHz variant (HackRF Pro).}
+\label{tab:bom_sensorB}
+\small
+\begin{tabular}{L{1.0cm} L{5.0cm} L{4.0cm} C{2.0cm}}
+\toprule
+\textbf{\#} & \textbf{Description} & \textbf{Placeholder Part} & \textbf{Qty} \\
+\midrule
+B1 & SDR transceiver, 70--6000~MHz, 12-bit ADC, USB 3.0, full-duplex & [USRP B200mini-i] & 1 \\
+B2 & Analog bandpass filter, 2.400--2.500~GHz, SMA & [BPF 2.4GHz] & 1 \\
+B3 & SP4T RF switch, DC--6~GHz, SMA, GPIO control & [SP4T Switch] & 1 \\
+B4 & Passive triaxial antenna, 2.4~GHz, 3$\times$ SMA outputs, $\pm 1$~dB isotropic & [Triaxial Antenna 2.4G] & 1 \\
+B5 & SMA cables, 10~cm, low-loss, straight & [SMA Cable 10cm] & 4 \\
+B6 & DC block, SMA, $> 10$~kHz & [DC Block] & 1 \\
+B7 & TVS diode ESD protection, SMA, $< 0.5$~pF & [ESD Protector] & 1 \\
+B8 & TCXO reference oscillator, $< \pm 0.5$~ppm & [TCXO Module] & 1 \\
+B9 & Edge computing module, 40~TOPS, GPU, 8~GB RAM & [Jetson Orin Nano] & 1 \\
+B10 & Touch-screen display, 5~inch, MIPI-DSI, sunlight-readable & [LCD Touch 5in] & 1 \\
+B11 & GNSS receiver, multi-constellation, UART & [GNSS Module] & 1 \\
+B12 & LiPo battery, 4S, 5000~mAh, with BMS & [LiPo 4S 5000mAh] & 1 \\
+B13 & DC-DC converter, 5~V/3~A, 3.3~V/1~A, 1.8~V/0.5~A & [DCDC Regulator] & 1 \\
+B14 & Enclosure, handheld, aluminium heatsink, IP54 & [Enclosure Design] & 1 \\
+B15 & USB 3.0 cable, 30~cm, Shielded & [USB3 Cable] & 1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Sensor~C Bill of Materials: 5/6~GHz}
+
+\begin{table}[ht]
+\centering
+\caption{Sensor~C BOM: 5/6~GHz variant (USRP B200mini-i).}
+\label{tab:bom_sensorC}
+\small
+\begin{tabular}{L{1.0cm} L{5.0cm} L{4.0cm} C{2.0cm}}
+\toprule
+\textbf{\#} & \textbf{Description} & \textbf{Placeholder Part} & \textbf{Qty} \\
+\midrule
+C1 & SDR transceiver, 70--6000~MHz, 12-bit ADC, USB 3.0, full-duplex & [USRP B200mini-i] & 1 \\
+C2 & Analog bandpass filter, 5.150--5.850~GHz, SMA & [BPF 5GHz] & 1 \\
+C3 & Triaxial antenna with integrated SP3T MUX, 1$\times$ SMA output, $\pm 1.5$~dB isotropic & [Triaxial Antenna 5G MUX] & 1 \\
+C4 & SMA cable, 15~cm, low-loss, straight & [SMA Cable 15cm] & 1 \\
+C5 & GPIO control cable, 20~cm, for integrated MUX & [GPIO Cable] & 1 \\
+C6 & DC block, SMA, $> 10$~kHz & [DC Block] & 1 \\
+C7 & TVS diode ESD protection, SMA, $< 0.5$~pF & [ESD Protector] & 1 \\
+C8 & TCXO reference oscillator, $< \pm 0.5$~ppm & [TCXO Module] & 1 \\
+C9 & Edge computing module, 40~TOPS, GPU, 8~GB RAM & [Jetson Orin Nano] & 1 \\
+C10 & Touch-screen display, 5~inch, MIPI-DSI, sunlight-readable & [LCD Touch 5in] & 1 \\
+C11 & GNSS receiver, multi-constellation, UART & [GNSS Module] & 1 \\
+C12 & LiPo battery, 4S, 5000~mAh, with BMS & [LiPo 4S 5000mAh] & 1 \\
+C13 & DC-DC converter, 5~V/3~A, 3.3~V/1~A, 1.8~V/0.5~A & [DCDC Regulator] & 1 \\
+C14 & Enclosure, handheld, aluminium heatsink, IP54 & [Enclosure Design] & 1 \\
+C15 & USB 3.0 cable, 30~cm, Shielded & [USB3 Cable] & 1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Normative Compliance Traceability Matrix}
+
+Table~\ref{tab:compliance_matrix} traces each normative requirement to the hardware component or design decision that satisfies it.
+
+\begin{table}[ht]
+\centering
+\caption{Normative compliance traceability matrix.}
+\label{tab:compliance_matrix}
+\small
+\begin{tabular}{L{3.5cm} L{3.0cm} L{5.5cm}}
+\toprule
+\textbf{Requirement} & \textbf{Source} & \textbf{Satisfying Component / Design} \\
+\midrule
+Isotropic response $< 2$~dB ($< 900$~MHz) & K.61, K.100 & Sensor~A: 3$\times$ discrete antennas on 3D-printed base \\
+Isotropic response $< 3$~dB (0.9--3~GHz) & K.61, K.100 & Sensor~B: Passive triaxial antenna, $\pm 1$~dB \\
+Isotropic response $< 3$~dB (3--6~GHz) & K.61, K.100 & Sensor~C: Integrated MUX triaxial, $\pm 1.5$~dB \\
+Sequential axis measurement & K.100 & SP3T/SP4T switch with post-processing \\
+6-min averaging time & ICNIRP 2020 & Software integration in compliance mode \\
+1-min screening time & K.91 \S7.2.3 & Software integration in screening mode \\
+Probe height 1.5--1.7~m & K.113 \S IV.3, K.91 & Ergonomic handheld design, operator instruction \\
+Combined uncertainty $U \leq 3$~dB & K.91, K.61 & TCXO, band-select filter, calibration procedure \\
+Measurement data logging & K.113 & Jetson Orin Nano, timestamped CSV/JSON export \\
+Exposure map generation & K.113, Mart\'{i}nez-Gonz\'{a}lez 2022 & GPU-accelerated Kriging interpolation \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+% ==============================================================================
+% AUTOMATIC BIBLIOGRAPHY (NORMATIVE REFERENCES 1--8 + KRIGING REFERENCE)
+% ==============================================================================
+\newpage
+\nocite{mintic_dec1370_2018, ane_res773_2023, icnirp2020, itut_k52, itut_k61, itut_k91, itut_k100, itut_k113, martinezgonzalez_2022}
+\bibliography{references}
+
+\end{document}

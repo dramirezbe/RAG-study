@@ -1,0 +1,164 @@
+% ==============================================================================
+% references.bib — DesignRNIHumanExposureSensor
+% Bibliography for SDR-Based Human Exposure (RNI) Monitoring and Mapping System
+% Correlated with docs in docs-RAG-RNI/ and research context
+% ==============================================================================
+
+% ==============================================================================
+% PART 1: PRIMARY REGULATORY FRAMEWORK & TECHNICAL STANDARDS (docs-RAG-RNI/)
+% ==============================================================================
+
+@misc{mintic_dec1370_2018,
+  author       = {{Ministerio de Tecnolog{\'{\i}}as de la Informaci{\'o}n y las Comunicaciones (MinTIC)}},
+  title        = {{Decreto 1370 de 2018: Por el cual se dictan disposiciones relacionadas con los l{\'{\i}}mites de exposici{\'o}n de las personas a los campos electromagn{\'e}ticos generados por estaciones de radiocomunicaciones y se subroga el cap{\'{\i}}tulo 5 del t{\'{\i}}tulo 2 de la parte 2 del libro 2 del Decreto 1078 de 2015, Decreto {\'U}nico Reglamentario del sector de Tecnolog{\'{\i}}as de la Informaci{\'o}n y las Comunicaciones}},
+  howpublished = {Diario Oficial de Colombia, Departamento Administrativo de la Funci{\'o}n P{\'u}blica},
+  address      = {Bogot{\'a} D.C., Colombia},
+  month        = aug,
+  year         = {2018},
+  keywords     = {MinTIC, Colombia, Decreto 1370, human exposure limits, EMF, radiocommunication stations, Decreto 1078 de 2015},
+  note         = {Establece el marco general de l{\'{\i}}mites de exposici{\'o}n humana a campos electromagn{\'e}ticos en Colombia y faculta a la ANE para reglamentar las condiciones t{\'e}cnicas de medici{\'o}n y despliegue},
+  file         = {docs-RAG-RNI/Decreto_1370_de_2018.pdf}
+}
+
+@misc{ane_res773_2023,
+  author       = {{Agencia Nacional del Espectro (ANE)}},
+  title        = {{Resoluci{\'o}n 773 de 2023: Por la cual se adoptan los l{\'{\i}}mites de exposici{\'o}n de las personas a los campos electromagn{\'e}ticos y se reglamentan las condiciones que deben reunir las estaciones radioel{\'e}ctricas para cumplirlos y se dictan disposiciones relacionadas con el despliegue de antenas de radiocomunicaciones}},
+  howpublished = {Diario Oficial No. 52.567 del 2 de noviembre de 2023, Rep{\'u}blica de Colombia},
+  address      = {Bogot{\'a} D.C., Colombia},
+  month        = oct,
+  year         = {2023},
+  keywords     = {non-ionizing radiation, human exposure limits, ANE, Colombia, electromagnetic fields, radio stations, antenna deployment, compliance assessment, ICNIRP},
+  note         = {Adopta l{\'{\i}}mites m{\'a}ximos de exposici{\'o}n ICNIRP/UIT-T para p{\'u}blico en general y ocupacional, clasifica estaciones radioel{\'e}ctricas seg{\'u}n PIRE, y reglamenta metodolog{\'{\i}}as de c{\'a}lculo, medici{\'o}n in-situ y monitoreo continuo de RNI},
+  file         = {docs-RAG-RNI/ANE_0773_2023.pdf}
+}
+
+@article{icnirp2020,
+  author    = {{International Commission on Non-Ionizing Radiation Protection (ICNIRP)}},
+  title     = {Guidelines for Limiting Exposure to Electromagnetic Fields (100~{kHz} to 300~{GHz})},
+  journal   = {Health Physics},
+  volume    = {118},
+  number    = {5},
+  pages     = {483--524},
+  year      = {2020},
+  month     = may,
+  publisher = {Wolters Kluwer Health, Inc.},
+  doi       = {10.1097/HP.0000000000001210},
+  url       = {https://doi.org/10.1097/HP.0000000000001210},
+  keywords  = {electromagnetic fields, exposure limits, radiofrequency, basic restrictions, reference levels, non-ionizing radiation, ICNIRP guidelines},
+  note      = {Establishes international reference levels and basic restrictions for protecting humans exposed to RF EMFs (100~kHz to 300~GHz), replacing 1998 guidelines for radiofrequencies},
+  file      = {docs-RAG-RNI/ICNIRP_2020.pdf}
+}
+
+@techreport{itut_k52,
+  author      = {{International Telecommunication Union (ITU-T)}},
+  title       = {{Recommendation ITU-T K.52: Guidance on complying with limits for human exposure to electromagnetic fields}},
+  type        = {ITU-T Recommendation},
+  number      = {K.52 (08/2024), Edition 7.0},
+  series      = {Series K: Protection against interference},
+  institution = {{International Telecommunication Union (ITU)}},
+  address     = {Geneva, Switzerland},
+  year        = {2024},
+  month       = aug,
+  url         = {https://handle.itu.int/11.1002/1000/16004},
+  keywords    = {compliance assessment, exposure limits, general public, occupational, compliance zones, evaluation methods, ITU-T K.52},
+  note        = {Provides compliance assessment framework, calculation methods, and zoning criteria (compliance, occupational, and exceedance zones) for telecommunication facilities},
+  file        = {docs-RAG-RNI/K.52_2024-08-13.pdf}
+}
+
+@techreport{itut_k61,
+  author      = {{International Telecommunication Union (ITU-T)}},
+  title       = {{Recommendation ITU-T K.61: Guidance on measurement and numerical prediction of electromagnetic fields for compliance with human exposure limits for telecommunication installations}},
+  type        = {ITU-T Recommendation},
+  number      = {K.61 (10/2025), Edition 4.0},
+  series      = {Series K: Protection against interference},
+  institution = {{International Telecommunication Union (ITU)}},
+  address     = {Geneva, Switzerland},
+  year        = {2025},
+  month       = oct,
+  url         = {https://handle.itu.int/11.1002/1000/16424},
+  keywords    = {electromagnetic fields, EMF calculations, EMF measurements, exposure assessment, numerical prediction, telecommunication installations},
+  note        = {Provides guidance on broadband and frequency-selective measurement procedures and numerical simulation methods for verifying human exposure compliance},
+  file        = {docs-RAG-RNI/K.61-2025-10.pdf}
+}
+
+@techreport{itut_k91,
+  author      = {{International Telecommunication Union (ITU-T)}},
+  title       = {{Recommendation ITU-T K.91: Guidance for assessment, evaluation and monitoring of human exposure to radio frequency electromagnetic fields}},
+  type        = {ITU-T Recommendation},
+  number      = {K.91 (01/2024), Edition 8.0},
+  series      = {Series K: Protection against interference},
+  institution = {{International Telecommunication Union (ITU)}},
+  address     = {Geneva, Switzerland},
+  year        = {2024},
+  month       = jan,
+  url         = {https://handle.itu.int/11.1002/1000/15777},
+  keywords    = {exposure assessment, monitoring, broadband measurements, frequency selective measurements, EMF monitoring, base station underground, RF-EMF exposure},
+  note        = {Guidance on assessing and monitoring RF-EMF in publicly accessible areas (8.3~kHz to 300~GHz), including measurement uncertainty assessment and electronic Watt guard tools},
+  file        = {docs-RAG-RNI/K.91_2024-01-13.pdf}
+}
+
+@techreport{itut_k100,
+  author      = {{International Telecommunication Union (ITU-T)}},
+  title       = {{Recommendation ITU-T K.100: Measurement of radio frequency electromagnetic fields to determine compliance with human exposure limits when a base station is put into operation}},
+  type        = {ITU-T Recommendation},
+  number      = {K.100 (08/2024), Edition 6.0},
+  series      = {Series K: Protection against interference},
+  institution = {{International Telecommunication Union (ITU)}},
+  address     = {Geneva, Switzerland},
+  year        = {2024},
+  month       = aug,
+  url         = {https://handle.itu.int/11.1002/1000/16008},
+  keywords    = {actual maximum approach, base station, compliance, electromagnetic fields, exposure assessment, put into operation, MIMO},
+  note        = {Standardizes in-situ measurement procedures for base stations put into operation, accounting for ambient sources and actual maximum RF exposure from MIMO/5G transmitters},
+  file        = {docs-RAG-RNI/K.100-2024-08.pdf}
+}
+
+@techreport{itut_k113,
+  author      = {{International Telecommunication Union (ITU-T)}},
+  title       = {{Recommendation ITU-T K.113: Generation of radiofrequency electromagnetic field level maps}},
+  type        = {ITU-T Recommendation},
+  number      = {K.113 (07/2025), Edition 2.0},
+  series      = {Series K: Protection against interference},
+  institution = {{International Telecommunication Union (ITU)}},
+  address     = {Geneva, Switzerland},
+  year        = {2025},
+  month       = jul,
+  url         = {https://handle.itu.int/11.1002/1000/16425},
+  keywords    = {RF-EMF, RF-EMF monitoring system, RF-EMF monitoring website, exposure maps, spatial interpolation, Kriging},
+  note        = {Guidelines for synthesizing RF-EMF exposure maps over geographical zones using drive tests, fixed monitoring stations, and spatial interpolation methods for public disclosure},
+  file        = {docs-RAG-RNI/K.113-2025-07.pdf}
+}
+
+% ==============================================================================
+% PART 2: INDOOR EXPOSURE MAPPING, KRIGING INTERPOLATION & SPATIAL SAMPLING
+% ==============================================================================
+
+@article{martinezgonzalez_2022,
+  author    = {Mart{\'{\i}}nez-Gonz{\'a}lez, A. and Monz{\'o}-Cabrera, J. and Mart{\'{\i}}nez-S{\'a}ez, A. J. and Lozano-Guerrero, A. J.},
+  title     = {Minimization of measuring points for the electric field exposure map generation in indoor environments by means of Kriging interpolation and selective sampling},
+  journal   = {Environmental Research},
+  volume    = {212},
+  pages     = {113577},
+  year      = {2022},
+  month     = may,
+  publisher = {Elsevier},
+  doi       = {10.1016/j.envres.2022.113577},
+  url       = {https://doi.org/10.1016/j.envres.2022.113577},
+  keywords  = {Electromagnetic field radiation map, Kriging interpolation, Spatial data analysis, Non ionizing radiation, Measuring point reduction},
+  note      = {Evaluates ordinary Kriging interpolation for indoor electric field exposure mapping and proposes the Elimination of Less Significant Points (ELSP) strategy to reduce measurement points by up to 70%},
+  file      = {docs-RAG-RNI/measure-electric-field-exposure-indoor.pdf}
+}
+
+% ==============================================================================
+% PART 3: EDGE COMPUTING AND PROCESSING PLATFORMS
+% ==============================================================================
+
+@misc{jetson_orin,
+  author       = {{NVIDIA Corporation}},
+  title        = {{Jetson Orin Nano Developer Kit}},
+  howpublished = {NVIDIA Developer Documentation},
+  year         = {2024},
+  url          = {https://developer.nvidia.com/embedded/jetson-orin-nano},
+  keywords     = {edge computing, GPU, AI inference, embedded systems, Jetson, Orin, NVIDIA},
+  note         = {40 TOPS (INT8) AI compute, 1024-core Ampere GPU, 6-core Arm Cortex-A78AE CPU, 7--15 W TDP, MIPI-DSI display interface, USB 3.2, GPIO for hardware control}
+}
