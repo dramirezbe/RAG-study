@@ -981,7 +981,7 @@
     {
       "id": "gpsdo_rect",
       "type": "rectangle",
-      "x": 563,
+      "x": 564.5151700106535,
       "y": 548,
       "width": 102,
       "height": 228,
@@ -1000,8 +1000,8 @@
         "type": 3
       },
       "seed": 546820652,
-      "version": 109,
-      "versionNonce": 1547259848,
+      "version": 137,
+      "versionNonce": 2046932900,
       "isDeleted": false,
       "boundElements": [
         {
@@ -1009,14 +1009,14 @@
           "id": "gpsdo_text_inner"
         }
       ],
-      "updated": 1787611143894,
+      "updated": 1787864360732,
       "link": null,
       "locked": false
     },
     {
       "id": "gpsdo_text_inner",
       "type": "text",
-      "x": 577.5300216674805,
+      "x": 579.045191678134,
       "y": 649.5,
       "width": 72.93995666503906,
       "height": 25,
@@ -1033,11 +1033,11 @@
       "index": "b07Z",
       "roundness": null,
       "seed": 1396317676,
-      "version": 71,
-      "versionNonce": 1602707695,
+      "version": 99,
+      "versionNonce": 1471357732,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1787613814764,
+      "updated": 1787864360732,
       "link": null,
       "locked": false,
       "text": "GPSDO",
